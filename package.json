@@ -1,0 +1,15 @@
+{
+  "name": "ymodel",
+  "version": "1.0.0",
+  "description": "Easy to use model base class with basic deserialization support.",
+  "repository": "git@gitlab.com:groundcontrol-app/lib.ymodel.git",
+  "author": "Joost Lubach <joostlubach@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "*"
+  },
+  "dependencies": {},
+  "scripts": {
+    "build": "tsc"
+  }
+}
