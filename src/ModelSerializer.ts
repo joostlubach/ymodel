@@ -1,4 +1,4 @@
-import { camelCase } from 'lodash'
+import { camelCase, isObject } from 'lodash'
 import { modifyObject } from 'ytil'
 import Model from './Model'
 import { modelSerializers, propSerializers } from './registry'
@@ -94,7 +94,8 @@ export default class ModelSerializer {
           value == null ? null : serializer.deserialize(value)
         ))
       } else {
-        console.warn(`Prop [${prop}]: no serializer found for type ${type}`)
+        const typeName = isObject(type) ? (type as any)?.name ?? type : type
+        console.warn(`Prop [${prop}]: no serializer found for type \`${typeName}\``)
       }
     }
 
@@ -111,7 +112,8 @@ export default class ModelSerializer {
           value == null ? null : serializer.serialize(value)
         ))
       } else {
-        console.warn(`Prop [${prop}]: no serializer found for type ${type}`)
+        const typeName = isObject(type) ? (type as any)?.name ?? type : type
+        console.warn(`Prop [${prop}]: no serializer found for type \`${typeName}\``)
       }
     }
 

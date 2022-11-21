@@ -17,8 +17,8 @@ export interface PropertySerialization {
 }
 
 export interface PropertySerializer<T, S> {
-  serialize:   (serialized: S) => T
-  deserialize: (value: T) => S
+  deserialize: (serialized: S) => T
+  serialize:   (value: T) => S
 }
 
 export type ModelSerialized = Record<string, any>
