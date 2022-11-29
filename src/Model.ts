@@ -1,4 +1,3 @@
-import { isFunction } from 'lodash'
 import ModelSerialization from './ModelSerializer'
 import { ModelSerialized } from './types'
 

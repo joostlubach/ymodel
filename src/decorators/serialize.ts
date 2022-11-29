@@ -1,6 +1,6 @@
 import ModelSerialization from '../ModelSerializer'
 
-export function serialize<T, S>(type: Constructor<T>, options: SerializerDecoratorOptions<T, S> = {}): PropertyDecorator {
+export function serialize<T>(type: Constructor<T>, options: SerializerDecoratorOptions = {}): PropertyDecorator {
   return (target, key) => {
     if (typeof key !== 'string') { return }
 
@@ -10,6 +10,6 @@ export function serialize<T, S>(type: Constructor<T>, options: SerializerDecorat
   }
 }
 
-export interface SerializerDecoratorOptions<T, S> {
+export interface SerializerDecoratorOptions {
   path?: string
 }
