@@ -78,7 +78,7 @@ export default class ModelSerializer {
   public serializePartial(model: Partial<Model>) {
     const serialized: ModelSerialized = {}
     for (const [prop, value] of Object.entries(model)) {
-      serialized[prop] = this.deserializeProp(prop, value)
+      serialized[prop] = this.serializeProp(prop, value)
     }
 
     return serialized
