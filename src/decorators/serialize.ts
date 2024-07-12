@@ -1,6 +1,6 @@
 import ModelSerialization from '../ModelSerializer'
 
-export function serialize<T>(type: Constructor<T>, options: SerializerDecoratorOptions = {}): PropertyDecorator {
+export function serialize(type: Function, options: SerializerDecoratorOptions = {}): PropertyDecorator {
   return (target, key) => {
     if (typeof key !== 'string') { return }
 

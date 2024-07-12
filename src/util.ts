@@ -1,3 +1,5 @@
+import { Constructor } from 'ytil'
+
 export function resolveConstructor(arg: any) {
   if (typeof arg === 'function' && arg.prototype != null) {
     return arg

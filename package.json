@@ -2,14 +2,41 @@
   "name": "ymodel",
   "version": "1.0.0",
   "description": "Easy to use model base class with basic deserialization support.",
-  "repository": "git@gitlab.com:groundcontrol-app/lib.ymodel.git",
-  "author": "Joost Lubach <joostlubach@gmail.com>",
+  "author": "Joost Lubach",
   "license": "MIT",
-  "devDependencies": {
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/cjs/index.js"
+    },
+    "./*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/esm/*.js",
+      "default": "./dist/cjs/*.js"
+    }
+  },
+  "scripts": {
+    "build": "pnpm clean && pnpm build:tsc",
+    "build:tsc": "pnpm build:tsc:esm && pnpm build:tsc:cjs",
+    "build:tsc:esm": "tsc -p tsconfig.prod.json --module esnext --outDir dist/esm --declarationDir dist/types",
+    "build:tsc:cjs": "tsc -p tsconfig.prod.json --module commonjs --outDir dist/cjs --declaration false --declarationMap false",
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "lint": "eslint src --ext ts,tsx",
+    "check": "tsc -p . --noEmit",
+    "test": "NODE_ENV=test jest"
+  },
+  "peerDependencies": {
     "typescript": "*"
   },
-  "dependencies": {},
-  "scripts": {
-    "build": "tsc"
-  }
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.2",
+    "tsc-alias": "^1.8.8",
+    "typescript": "5.4.3"
+  },
+  "packageManager": "pnpm@8.4.0"
 }

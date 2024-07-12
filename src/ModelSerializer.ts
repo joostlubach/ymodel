@@ -1,5 +1,6 @@
 import { camelCase, isObject } from 'lodash'
-import { modifyObject } from 'ytil'
+import { Constructor, modifyObject } from 'ytil'
+
 import Model from './Model'
 import { modelSerializers, propSerializers } from './registry'
 import { ModelSerialized, PropertyInfo } from './types'

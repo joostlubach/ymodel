@@ -1,3 +1,5 @@
+import { Constructor } from 'ytil'
+
 import Model from './Model'
 import ModelSerializer from './ModelSerializer'
 import { PropertySerializer } from './types'

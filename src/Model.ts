@@ -1,3 +1,5 @@
+import { Constructor } from 'ytil'
+
 import ModelSerialization from './ModelSerializer'
 import { ModelSerialized } from './types'
 
@@ -27,7 +29,7 @@ export default abstract class Model {
 
   protected deserialize() {
     const serialization = ModelSerialization.for(this)
-    const serialized    = this.beforeDeserialize(this.serialized)
+    const serialized = this.beforeDeserialize(this.serialized)
 
     serialization.deserializeInto(this, serialized)
     this.afterDeserialize()
