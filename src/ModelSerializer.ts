@@ -1,9 +1,9 @@
 import { camelCase, isObject } from 'lodash'
 import { Constructor, modifyObject } from 'ytil'
-
 import Model from './Model'
+import { Ref } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
-import { ModelSerialized, PropertyInfo } from './types'
+import { Context, ModelSerialized, PropertyInfo } from './types'
 import { resolveConstructor, resolveSuperCtor } from './util'
 
 export default class ModelSerializer {
@@ -65,11 +65,11 @@ export default class ModelSerializer {
   //------
   // Serialization
 
-  public deserializeInto(model: Model, serialized: ModelSerialized) {
+  public deserializeInto(model: Model, serialized: ModelSerialized, context: Context) {
     for (const [prop, value] of Object.entries(serialized)) {
       const existing = Object.getOwnPropertyDescriptor(model, prop)
       Object.defineProperty(model, prop, {
-        value:        this.deserializeProp(prop, value),
+        value:        this.deserializeProp(prop, value, context),
         writable:     existing?.writable ?? true,
         configurable: false,
       })
@@ -85,7 +85,7 @@ export default class ModelSerializer {
     return serialized
   }
 
-  public deserializeProp(prop: string, value: any) {
+  public deserializeProp(prop: string, value: any, context: Context) {
     const info = this.propInfo(prop)
 
     for (const {type, path} of info.serialize) {
@@ -98,6 +98,10 @@ export default class ModelSerializer {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type
         console.warn(`Prop [${prop}]: no serializer found for type \`${typeName}\``)
       }
+    }
+
+    if (info.ref != null) {
+      value = new Ref(info.ref, value, context)
     }
 
     return value

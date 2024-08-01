@@ -1,7 +1,6 @@
 import { Constructor } from 'ytil'
-
 import ModelSerialization from './ModelSerializer'
-import { ModelSerialized } from './types'
+import { Context, ModelSerialized } from './types'
 
 export default abstract class Model {
 
@@ -16,9 +15,9 @@ export default abstract class Model {
   //------
   // Serialization
 
-  public static deserialize<M extends Model>(this: Constructor<M>, raw: ModelSerialized): M {
+  public static deserialize<M extends Model>(this: Constructor<M>, raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M {
     const model = new (this as any)(raw) as M
-    model.deserialize()
+    model.deserialize((context as any[])[0] ?? {})
     return model
   }
 
@@ -27,11 +26,11 @@ export default abstract class Model {
     return serialization.serializePartial(model)
   }
 
-  protected deserialize() {
+  protected deserialize(context: Context) {
     const serialization = ModelSerialization.for(this)
-    const serialized = this.beforeDeserialize(this.serialized)
 
-    serialization.deserializeInto(this, serialized)
+    const serialized = this.beforeDeserialize(this.serialized)
+    serialization.deserializeInto(this, serialized, context)
     this.afterDeserialize()
   }
 
