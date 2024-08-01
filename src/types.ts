@@ -1,5 +1,8 @@
+import Model from './Model'
+
 export interface PropertyInfo {
   field?:    string
+  ref?:      [ModelConstructor<any>, string]
   serialize: PropertySerialization[]
 }
 
@@ -21,4 +24,5 @@ export interface PropertySerializer<T, S> {
   serialize:   (value: T) => S
 }
 
+export type ModelConstructor<M extends Model> = new (...args: any[]) => M
 export type ModelSerialized = Record<string, any>

@@ -4,20 +4,9 @@
   "description": "Easy to use model base class with basic deserialization support.",
   "author": "Joost Lubach",
   "license": "MIT",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./src/index.ts",
   "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "default": "./dist/cjs/index.js"
-    },
-    "./*": {
-      "types": "./dist/types/*.d.ts",
-      "import": "./dist/esm/*.js",
-      "default": "./dist/cjs/*.js"
-    }
+    ".": "./src/index.ts"
   },
   "scripts": {
     "build": "pnpm clean && pnpm build:tsc",
