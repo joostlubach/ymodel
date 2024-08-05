@@ -40,9 +40,4 @@ export default abstract class Model {
 
   protected afterDeserialize() {}
 
-  public modify<M extends Model>(modifier: (raw: any) => any, ...context: {} extends Context ? [] : [context: Context]): M {
-    const nextRaw = modifier(this.serialized)
-    return Model.deserialize.call(this.constructor as Constructor<any>, nextRaw, ...context) as M
-  }
-
 }

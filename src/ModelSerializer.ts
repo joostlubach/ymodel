@@ -79,7 +79,7 @@ export default class ModelSerializer {
   public serializePartial(model: Partial<Model>) {
     const serialized: ModelSerialized = {}
     for (const [prop, value] of Object.entries(model)) {
-      serialized[prop] = this.serializeProp(prop, value)
+      this.serializePropInto(serialized, prop, value)
     }
 
     return serialized
@@ -107,8 +107,9 @@ export default class ModelSerializer {
     return value
   }
 
-  public serializeProp(prop: string, value: any) {
+  public serializePropInto(serialized: ModelSerialized, prop: string, value: any) {
     const info = this.propInfo(prop)
+    const destProp = info.field ?? prop
 
     for (const {type, path} of info.serialize) {
       const serializer = propSerializers.get(type)
@@ -122,7 +123,7 @@ export default class ModelSerializer {
       }
     }
 
-    return value
+    serialized[destProp] = value
   }
 
 }
