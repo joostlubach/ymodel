@@ -4,7 +4,7 @@ import { Ref } from './Ref'
 
 export interface PropertyInfo {
   field?:    string
-  ref?:      string
+  ref?:      string | ModelConstructor<Model>
   serialize: PropertySerialization[]
 }
 
@@ -38,4 +38,6 @@ export type AttributesOf<M extends Model> = Omit<{[K in keyof M as M[K] extends 
 export type PrimitiveAttributesOf<M extends Model> = Omit<AttributesOf<M>, 'id' | 'createdAt' | 'updatedAt'>
 
 export interface Context {}
+
 export type RefResolver<M extends Model> = (ref: Ref<M>, context: Context) => M | null
+export type RefExtractor = (model: string | ModelConstructor<any>, raw: any, context: Context) => string | number | null

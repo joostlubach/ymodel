@@ -1,7 +1,7 @@
-import { camelCase, isObject } from 'lodash'
+import { camelCase, isArray, isObject } from 'lodash'
 import { Constructor, modifyObject } from 'ytil'
 import Model from './Model'
-import { Ref } from './Ref'
+import { extractRef, Ref } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
 import { Context, ModelSerialized, PropertyInfo } from './types'
 import { resolveConstructor, resolveSuperCtor } from './util'
@@ -12,7 +12,7 @@ export default class ModelSerializer {
     public ctor: Constructor<Model>,
   ) {}
 
-  private propertyInfos: Record<string, PropertyInfo> = {}
+  private propertyInfos: Record<string | symbol, PropertyInfo> = {}
 
   public static for(arg: any) {
     const ctor = resolveConstructor(arg)
@@ -31,7 +31,7 @@ export default class ModelSerializer {
     return ModelSerializer.for(superCtor)
   }
 
-  public propInfo(prop: string): PropertyInfo {
+  public propInfo(prop: string | symbol): PropertyInfo {
     if (prop in this.propertyInfos) {
       return this.propertyInfos[prop]
     } else {
@@ -44,7 +44,7 @@ export default class ModelSerializer {
   //------
   // Property modification
 
-  public modify(prop: string, modifier: (prop: PropertyInfo) => void) {
+  public modify(prop: string | symbol, modifier: (prop: PropertyInfo) => void) {
     const info = this.propInfo(prop)
     modifier(info)
   }
@@ -66,11 +66,13 @@ export default class ModelSerializer {
   // Serialization
 
   public deserializeInto(model: Model, serialized: ModelSerialized, context: Context) {
-    for (const [prop, value] of Object.entries(serialized)) {
-      const existing = Object.getOwnPropertyDescriptor(model, prop)
+    for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(model))) {
+      const field = this.propInfo(prop).field ?? prop
+      const value = serialized[field]
+
       Object.defineProperty(model, prop, {
+        ...descriptor,
         value:        this.deserializeProp(prop, value, context),
-        writable:     existing?.writable ?? true,
         configurable: false,
       })
     }
@@ -78,7 +80,8 @@ export default class ModelSerializer {
 
   public serializePartial(model: Partial<Model>) {
     const serialized: ModelSerialized = {}
-    for (const [prop, value] of Object.entries(model)) {
+    for (const prop of Object.getOwnPropertyNames(model)) {
+      const value = (model as any)[prop]
       this.serializePropInto(serialized, prop, value)
     }
 
@@ -100,8 +103,16 @@ export default class ModelSerializer {
       }
     }
 
-    if (info.ref != null) {
-      value = new Ref(info.ref, value, context)
+    const {ref} = info
+    if (ref != null) {
+      const key = extractRef(ref, value, context)
+      if (isArray(key)) {
+        value = key.map(key => new Ref(ref, key, context))
+      } else if (key != null) {
+        value = new Ref(ref, key, context)
+      } else {
+        value = null
+      }
     }
 
     return value
@@ -110,6 +121,8 @@ export default class ModelSerializer {
   public serializePropInto(serialized: ModelSerialized, prop: string, value: any) {
     const info = this.propInfo(prop)
     const destProp = info.field ?? prop
+
+    console.log("SERIALIZE", prop, info, destProp, value)
 
     for (const {type, path} of info.serialize) {
       const serializer = propSerializers.get(type)
