@@ -122,8 +122,6 @@ export default class ModelSerializer {
     const info = this.propInfo(prop)
     const destProp = info.field ?? prop
 
-    console.log("SERIALIZE", prop, info, destProp, value)
-
     for (const {type, path} of info.serialize) {
       const serializer = propSerializers.get(type)
       if (serializer != null) {

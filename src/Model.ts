@@ -8,8 +8,8 @@ export default abstract class Model {
     public readonly serialized: ModelSerialized,
   ) {}
 
-  public copy() {
-    return (this.constructor as any).deserialize(this.serialized)
+  public copy(context: Context) {
+    return (this.constructor as any).deserialize(this.serialized, context)
   }
 
   //------
@@ -39,5 +39,12 @@ export default abstract class Model {
   }
 
   protected afterDeserialize() {}
+
+  public update(updates: Record<string, any>, context: Context) {
+    return (this.constructor as any).deserialize({
+      ...this.serialized,
+      ...updates,
+    }, context)
+  }
 
 }
