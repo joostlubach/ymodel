@@ -8,8 +8,8 @@ export default abstract class Model {
     public readonly serialized: ModelSerialized,
   ) {}
 
-  public copy(context: Context) {
-    return (this.constructor as any).deserialize(this.serialized, context)
+  public copy(...context: {} extends Context ? [] : [context: Context]) {
+    return (this.constructor as any).deserialize(this.serialized, ...context)
   }
 
   //------
