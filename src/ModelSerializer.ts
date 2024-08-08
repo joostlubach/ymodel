@@ -67,6 +67,8 @@ export default class ModelSerializer {
 
   public deserializeInto(model: Model, serialized: ModelSerialized, context: Context) {
     for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(model))) {
+      if (prop === '$serialized') { continue }
+
       const field = this.propInfo(prop).field ?? prop
       const value = serialized[field]
 

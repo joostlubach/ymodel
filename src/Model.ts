@@ -5,11 +5,11 @@ import { Context, ModelSerialized } from './types'
 export default abstract class Model {
 
   constructor(
-    public readonly serialized: ModelSerialized,
+    public readonly $serialized: ModelSerialized,
   ) {}
 
   public copy(...context: {} extends Context ? [] : [context: Context]) {
-    return (this.constructor as any).deserialize(this.serialized, ...context)
+    return (this.constructor as any).deserialize(this.$serialized, ...context)
   }
 
   //------
@@ -29,7 +29,7 @@ export default abstract class Model {
   protected deserialize(context: Context) {
     const serialization = ModelSerialization.for(this)
 
-    const serialized = this.beforeDeserialize(this.serialized)
+    const serialized = this.beforeDeserialize(this.$serialized)
     serialization.deserializeInto(this, serialized, context)
     this.afterDeserialize()
   }
@@ -42,7 +42,7 @@ export default abstract class Model {
 
   public update(updates: Record<string, any>, context: Context) {
     return (this.constructor as any).deserialize({
-      ...this.serialized,
+      ...this.$serialized,
       ...updates,
     }, context)
   }
