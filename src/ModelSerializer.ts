@@ -105,11 +105,11 @@ export default class ModelSerializer {
 
     const {ref} = info
     if (ref != null) {
-      const key = extractRef(ref, value, context)
-      if (isArray(key)) {
-        value = key.map(key => new Ref(ref, key, context))
-      } else if (key != null) {
-        value = new Ref(ref, key, context)
+      const id = extractRef(ref, value, context)
+      if (isArray(id)) {
+        value = id.map(id => new Ref(ref, id, context))
+      } else if (id != null) {
+        value = new Ref(ref, id, context)
       } else {
         value = null
       }

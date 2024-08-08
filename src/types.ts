@@ -40,4 +40,7 @@ export type PrimitiveAttributesOf<M extends Model> = Omit<AttributesOf<M>, 'id' 
 export interface Context {}
 
 export type RefResolver<M extends Model> = (ref: Ref<M>, context: Context) => M | null
-export type RefExtractor = (model: string | ModelConstructor<any>, raw: any, context: Context) => string | number | null
+export type RefExtractor<M extends Model> = (model: string | ModelConstructor<M>, raw: any, context: Context) => IDOf<M> | null
+
+// Gracious ID extractor - if unknown, defaults to `any` instead of `never`.
+export type IDOf<M extends Model> = M extends {id: infer ID} ? ID : any
