@@ -39,14 +39,12 @@ export function extractRef<M extends Model>(model: string | ModelConstructor<M>,
   for (const extractor of extractors) {
     if (isArray(raw)) {
       const ids = sparse(raw.map((r: any) => extractor(model, r, context)))
-      if (ids.length > 0) {
-        return ids
-      }
+      if (ids.length > 0) { return ids }
     } else {
       const id = extractor(model, raw, context)
       if (id != null) { return id }
     }
   }
 
-  return null
+  return isArray(raw) ? [] : null
 }

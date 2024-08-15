@@ -40,7 +40,7 @@ export default abstract class Model {
 
   protected afterDeserialize() {}
 
-  public update(updates: Record<string, any>, context: Context) {
+  public update(updates: Record<string, any>, context: Context): this {
     return (this.constructor as any).deserialize({
       ...this.$serialized,
       ...updates,
