@@ -9,7 +9,7 @@ import { resolveConstructor, resolveSuperCtor } from './util'
 export default class ModelSerializer {
 
   constructor(
-    public ctor: Constructor<Model>,
+    public Model: Constructor<Model>,
   ) {}
 
   private propertyInfos: Record<string | symbol, PropertyInfo> = {}
@@ -25,19 +25,26 @@ export default class ModelSerializer {
   }
 
   public get super(): ModelSerializer | null {
-    const superCtor = resolveSuperCtor(this.ctor)
+    const superCtor = resolveSuperCtor(this.Model)
     if (superCtor == null) { return null }
 
     return ModelSerializer.for(superCtor)
   }
 
-  public propInfo(prop: string | symbol): PropertyInfo {
+  public propInfo(prop: string | symbol, forWriting: boolean = false): PropertyInfo {
     if (prop in this.propertyInfos) {
       return this.propertyInfos[prop]
-    } else {
+    }
+    
+    if (!forWriting) {
+      // Fall back onto super serializers.
       const info = this.super?.propInfo(prop) ?? PropertyInfo.empty()
       this.propertyInfos[prop] = info
       return info
+    } else {
+      // Create an info object for the property here.
+      this.propertyInfos[prop] = PropertyInfo.empty()
+      return this.propertyInfos[prop]
     }
   }
 
@@ -45,7 +52,7 @@ export default class ModelSerializer {
   // Property modification
 
   public modify(prop: string | symbol, modifier: (prop: PropertyInfo) => void) {
-    const info = this.propInfo(prop)
+    const info = this.propInfo(prop, true)
     modifier(info)
   }
 
@@ -108,6 +115,7 @@ export default class ModelSerializer {
     const {ref} = info
     if (ref != null) {
       const id = extractRef(ref, value, context)
+
       if (isArray(id)) {
         value = id.map(id => new Ref(ref, id, context))
       } else if (id != null) {
