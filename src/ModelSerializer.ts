@@ -100,11 +100,11 @@ export default class ModelSerializer {
     if (info.ref != null) {
       return this.deserializeRef(prop, info, info.ref, serialized, context)
     } else {
-      return this.deserializePropValue(prop, info, serialized, context)
+      return this.deserializePropValue(prop, info, serialized)
     }
   }
 
-  private deserializePropValue(prop: string, info: PropertyInfo, serialized: ModelSerialized, context: Context) {
+  private deserializePropValue(prop: string, info: PropertyInfo, serialized: ModelSerialized) {
     const field = info.field ?? prop
     let value = serialized[field]
 
