@@ -4,8 +4,14 @@ import { Ref } from './Ref'
 
 export interface PropertyInfo {
   field?:    string
-  ref?:      string | ModelConstructor<Model>
+  ref?:      RefInfo<Model>
   serialize: PropertySerialization[]
+}
+
+export interface RefInfo<M extends Model> {
+  model:          string | ModelConstructor<M>
+  idField?:       string
+  instanceField?: string
 }
 
 export const PropertyInfo: {
@@ -40,7 +46,7 @@ export type ModelData<M extends Model> = Omit<ModelAttributes<M>, 'id' | 'create
 export interface Context {}
 
 export type RefResolver<M extends Model> = (ref: Ref<M>, context: Context) => M | null
-export type RefExtractor<M extends Model> = (model: string | ModelConstructor<M>, raw: any, context: Context) => IDOf<M> | null
+export type RefExtractor<M extends Model> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<M>, serialized: ModelSerialized, context: Context) => IDOf<M> | null
 
 // Gracious ID extractor - if unknown, defaults to `any` instead of `never`.
 export type IDOf<M extends Model> = M extends {id: infer ID} ? ID : any

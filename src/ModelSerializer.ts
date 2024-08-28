@@ -1,9 +1,9 @@
 import { camelCase, isArray, isObject } from 'lodash'
-import { Constructor, modifyObject } from 'ytil'
+import { Constructor, modifyObject, monad } from 'ytil'
 import Model from './Model'
-import { extractRef, Ref } from './Ref'
+import { getRefExtractors, Ref } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
-import { Context, ModelSerialized, PropertyInfo } from './types'
+import { Context, ModelSerialized, PropertyInfo, RefInfo } from './types'
 import { resolveConstructor, resolveSuperCtor } from './util'
 
 export default class ModelSerializer {
@@ -76,12 +76,9 @@ export default class ModelSerializer {
     for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(model))) {
       if (prop === '$serialized') { continue }
 
-      const field = this.propInfo(prop).field ?? prop
-      const value = serialized[field]
-
       Object.defineProperty(model, prop, {
         ...descriptor,
-        value:        this.deserializeProp(prop, value, context),
+        value:        this.deserializeProp(prop, serialized, context),
         configurable: false,
       })
     }
@@ -97,8 +94,19 @@ export default class ModelSerializer {
     return serialized
   }
 
-  public deserializeProp(prop: string, value: any, context: Context) {
+  public deserializeProp(prop: string, serialized: ModelSerialized, context: Context) {
     const info = this.propInfo(prop)
+
+    if (info.ref != null) {
+      return this.deserializeRef(prop, info, info.ref, serialized, context)
+    } else {
+      return this.deserializePropValue(prop, info, serialized, context)
+    }
+  }
+
+  private deserializePropValue(prop: string, info: PropertyInfo, serialized: ModelSerialized, context: Context) {
+    const field = info.field ?? prop
+    let value = serialized[field]
 
     for (const {type, path} of info.serialize) {
       const serializer = propSerializers.get(type)
@@ -111,21 +119,22 @@ export default class ModelSerializer {
         console.warn(`Prop [${prop}]: no serializer found for type \`${typeName}\``)
       }
     }
-
-    const {ref} = info
-    if (ref != null) {
-      const id = extractRef(ref, value, context)
-
-      if (isArray(id)) {
-        value = id.map(id => new Ref(ref, id, context))
-      } else if (id != null) {
-        value = new Ref(ref, id, context)
-      } else {
-        value = null
-      }
-    }
-
+    
     return value
+  }
+
+  private deserializeRef(prop: string, propInfo: PropertyInfo, refInfo: RefInfo<Model>, serialized: ModelSerialized, context: Context) {
+    const extractors = getRefExtractors()
+
+    for (const extractor of extractors) {
+      const idOrRef = extractor(prop, propInfo, refInfo, serialized, context)
+      if (idOrRef === undefined) { continue }
+      
+      return monad(idOrRef, id => new Ref(refInfo, id, context))
+    }
+  
+    const value = serialized[propInfo.field ?? prop]
+    return isArray(value) ? [] : null
   }
 
   public serializePropInto(serialized: ModelSerialized, prop: string, value: any) {

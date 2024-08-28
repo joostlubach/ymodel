@@ -1,12 +1,10 @@
-import { isArray } from 'lodash'
-import { sparse } from 'ytil'
 import Model from './Model'
-import { Context, IDOf, ModelConstructor, RefExtractor, RefResolver } from './types'
+import { Context, IDOf, RefExtractor, RefInfo, RefResolver } from './types'
 
 export class Ref<M extends Model> {
 
   constructor(
-    public readonly model: ModelConstructor<M> | string,
+    public readonly info: RefInfo<M>,
     public readonly id: IDOf<M>,
     private readonly context: Context
   ) {}
@@ -35,16 +33,6 @@ export function refExtractor<M extends Model>(extractor: RefExtractor<M>) {
   return () => { extractors.delete(extractor) }
 }
 
-export function extractRef<M extends Model>(model: string | ModelConstructor<M>, raw: any, context: Context): Array<IDOf<M>> | IDOf<M> | null {
-  for (const extractor of extractors) {
-    if (isArray(raw)) {
-      const ids = sparse(raw.map((r: any) => extractor(model, r, context)))
-      if (ids.length > 0) { return ids }
-    } else {
-      const id = extractor(model, raw, context)
-      if (id != null) { return id }
-    }
-  }
-
-  return isArray(raw) ? [] : null
+export function getRefExtractors() {
+  return Array.from(extractors)
 }
