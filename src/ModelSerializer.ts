@@ -1,6 +1,5 @@
 import { camelCase, isArray, isObject } from 'lodash'
-import Monad from 'monad'
-import { Constructor, modifyObject } from 'ytil'
+import { Constructor, modifyObject, monad } from 'ytil'
 
 import Model from './Model'
 import { getRefExtractors, Ref } from './Ref'
@@ -132,7 +131,7 @@ export default class ModelSerializer {
       const idOrRef = extractor(prop, propInfo, refInfo, serialized, context)
       if (idOrRef === undefined) { continue }
       
-      return new Monad(idOrRef).map(id => new Ref(refInfo, id, context)).value
+      return monad.map(idOrRef, id => new Ref(refInfo, id, context))
     }
   
     const value = serialized[propInfo.field ?? prop]
