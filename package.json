@@ -21,7 +21,6 @@
   },
   "packageManager": "pnpm@8.4.0",
   "dependencies": {
-    "monad": "workspace:^",
     "ytil": "workspace:^"
   }
 }
