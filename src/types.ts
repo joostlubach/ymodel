@@ -42,7 +42,7 @@ export interface ModelConstructor<M extends Model> {
 export type ModelSerialized = Record<string, any>
 
 export type ModelAttributes<M extends Model> = Omit<{[K in keyof M as M[K] extends AnyFunction ? never : K]: M[K]}, '$serialized'>
-export type ModelData<M extends Model> = Omit<ModelAttributes<M>, 'id' | 'createdAt' | 'updatedAt'>
+export type ModelData<M extends Model> = Omit<ModelAttributes<M>, 'id' | 'created_at' | 'updated_at'>
 
 export interface Context {}
 export interface ModelMeta {}
