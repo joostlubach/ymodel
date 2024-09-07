@@ -1,4 +1,5 @@
 import { AnyFunction } from 'ytil'
+
 import Model from './Model'
 import { Ref } from './Ref'
 
@@ -44,6 +45,7 @@ export type ModelAttributes<M extends Model> = Omit<{[K in keyof M as M[K] exten
 export type ModelData<M extends Model> = Omit<ModelAttributes<M>, 'id' | 'createdAt' | 'updatedAt'>
 
 export interface Context {}
+export interface ModelMeta {}
 
 export type RefResolver<M extends Model> = (ref: Ref<M>, context: Context) => M | null
 export type RefExtractor<M extends Model> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<M>, serialized: ModelSerialized, context: Context) => IDOf<M> | null
