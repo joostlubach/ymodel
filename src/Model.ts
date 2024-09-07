@@ -1,4 +1,5 @@
 import { Constructor } from 'ytil'
+
 import ModelSerialization from './ModelSerializer'
 import { Context, ModelSerialized } from './types'
 
