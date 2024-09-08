@@ -10,9 +10,8 @@ export interface PropertyInfo {
 }
 
 export interface RefInfo<M extends Model> {
-  model:          string | ModelConstructor<M>
-  idField?:       string
-  instanceField?: string
+  model:    string | ModelConstructor<M>
+  idField?: string
 }
 
 export const PropertyInfo: {
