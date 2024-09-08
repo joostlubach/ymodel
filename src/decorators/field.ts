@@ -6,7 +6,5 @@ export function field(name: string): PropertyDecorator {
     serialization.modify(key as string, prop => {
       prop.field = name
     })
-
-    return {enumerable: true, writable: true}
   }
 }

@@ -9,6 +9,16 @@ export function assignMeta(target: ModelConstructor<any>, meta: ModelMeta) {
   })
 }
 
+export function findModelWithMeta(predicate: (meta: ModelMeta) => boolean): ModelConstructor<any> | null {
+  for (const [ctor, meta] of metas) {
+    if (predicate(meta)) {
+      return ctor
+    }
+  }
+
+  return null
+}
+
 export function getModelMeta(target: ModelConstructor<any>): ModelMeta | null {
   return metas.get(target) ?? null
 }
