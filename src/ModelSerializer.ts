@@ -1,6 +1,5 @@
-import { camelCase, isArray, isObject } from 'lodash'
-import { Constructor, modifyObject, monad } from 'ytil'
-
+import { isArray, isObject } from 'lodash'
+import { Constructor, modifyObject, monad, sparse } from 'ytil'
 import Model from './Model'
 import { getRefExtractors, Ref } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
@@ -58,19 +57,6 @@ export default class ModelSerializer {
   }
 
   //------
-  // Field names
-
-  public propertyName(field: string) {
-    for (const [prop, info] of Object.entries(this.propertyInfos)) {
-      if (info.field === field) {
-        return prop
-      }
-    }
-
-    return camelCase(field)
-  }
-
-  //------
   // Serialization
 
   public deserializeInto(model: Model, serialized: ModelSerialized, context: Context) {
@@ -106,8 +92,10 @@ export default class ModelSerializer {
   }
 
   private deserializePropValue(prop: string, info: PropertyInfo, serialized: ModelSerialized) {
-    const field = info.field ?? prop
-    let value = serialized[field]
+    const fields = sparse(info.fields ?? [prop])
+    let value = fields.reduce<any>((value, field) => {
+      return value === undefined ? serialized[field] : value
+    }, undefined)
 
     for (const {type, path} of info.serialize) {
       const serializer = propSerializers.get(type)
@@ -134,13 +122,16 @@ export default class ModelSerializer {
       return monad.map(idOrRef, id => new Ref(refInfo, id, context))
     }
   
-    const value = serialized[propInfo.field ?? prop]
+    const fields = sparse(propInfo.fields ?? [prop])
+    const value = fields.reduce<any>((value, field) => {
+      return value === undefined ? serialized[field] : value
+    }, undefined)
     return isArray(value) ? [] : null
   }
 
   public serializePropInto(serialized: ModelSerialized, prop: string, value: any) {
     const info = this.propInfo(prop)
-    const destProp = info.field ?? prop
+    const destProp = sparse(info.fields ?? [prop]).shift()!
 
     for (const {type, path} of info.serialize) {
       const serializer = propSerializers.get(type)

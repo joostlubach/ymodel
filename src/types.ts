@@ -1,10 +1,9 @@
 import { AnyFunction } from 'ytil'
-
 import Model from './Model'
 import { Ref } from './Ref'
 
 export interface PropertyInfo {
-  field?:    string
+  fields?:   string[]
   ref?:      RefInfo<Model>
   serialize: PropertySerialization[]
 }
