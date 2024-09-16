@@ -9,7 +9,7 @@ export function ref<M extends Model>(model: ModelConstructor<M> | string, option
     const serialization = ModelSerialization.for(target)
     serialization.modify(key as string, info => {
       if (field != null) {
-        info.fields = field
+        info.fields = [field]
       }
       info.ref = {
         model,
