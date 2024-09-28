@@ -1,13 +1,18 @@
 import { Constructor } from 'ytil'
-
 import ModelSerialization from './ModelSerializer'
 import { Context, ModelSerialized } from './types'
 
 export default abstract class Model {
 
   constructor(
-    public readonly $serialized: ModelSerialized,
-  ) {}
+    private readonly $serialized: ModelSerialized,
+  ) {
+    Object.defineProperty(this, '$serialized', {
+      enumerable:   false,
+      configurable: false,
+      writable:     false,
+    })
+  }
 
   public copy(...context: {} extends Context ? [] : [context: Context]) {
     return (this.constructor as any).deserialize(this.$serialized, ...context)
@@ -20,6 +25,11 @@ export default abstract class Model {
     const model = new (this as any)(raw) as M
     model.deserialize((context as any[])[0] ?? {})
     return model
+  }
+
+  public serialize(): ModelSerialized {
+    const serialization = ModelSerialization.for(this)
+    return serialization.serializePartial(this)
   }
 
   public static serializePartial<M extends Model>(this: Constructor<M>, model: Partial<M>): ModelSerialized {

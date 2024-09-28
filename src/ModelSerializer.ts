@@ -74,6 +74,9 @@ export default class ModelSerializer {
   public serializePartial(model: Partial<Model>) {
     const serialized: ModelSerialized = {}
     for (const prop of Object.getOwnPropertyNames(model)) {
+      const info = Object.getOwnPropertyDescriptor(model, prop)
+      if (info?.enumerable !== true) { continue }
+
       const value = (model as any)[prop]
       this.serializePropInto(serialized, prop, value)
     }
@@ -132,6 +135,10 @@ export default class ModelSerializer {
   public serializePropInto(serialized: ModelSerialized, prop: string, value: any) {
     const info = this.propInfo(prop)
     const destProp = sparse(info.fields ?? [prop]).shift()!
+
+    if (info.ref != null) {
+      value = monad.map(value, it => isObject(it) && 'id' in it ? it.id : it)
+    }
 
     for (const {type, path} of info.serialize) {
       const serializer = propSerializers.get(type)
