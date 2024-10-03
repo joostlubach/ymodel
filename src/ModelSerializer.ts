@@ -104,7 +104,7 @@ export default class ModelSerializer {
       const serializer = propSerializers.get(type)
       if (serializer != null) {
         value = modifyObject(value, path ?? '', value => (
-          value == null ? null : serializer.deserialize(value, options)
+          value == null ? null : monad.map(value, val => serializer.deserialize(val, options))
         ))
       } else {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type
@@ -144,7 +144,7 @@ export default class ModelSerializer {
       const serializer = propSerializers.get(type)
       if (serializer != null) {
         value = modifyObject(value, path ?? '', value => (
-          value == null ? null : serializer.serialize(value, options)
+          value == null ? null : monad.map(value, val => serializer.serialize(val, options))
         ))
       } else {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type
