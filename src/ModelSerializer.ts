@@ -100,11 +100,11 @@ export default class ModelSerializer {
       return value === undefined ? serialized[field] : value
     }, undefined)
 
-    for (const {type, path} of info.serialize) {
+    for (const {type, path, options = {}} of info.serialize) {
       const serializer = propSerializers.get(type)
       if (serializer != null) {
         value = modifyObject(value, path ?? '', value => (
-          value == null ? null : serializer.deserialize(value)
+          value == null ? null : serializer.deserialize(value, options)
         ))
       } else {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type
@@ -140,11 +140,11 @@ export default class ModelSerializer {
       value = monad.map(value, it => isObject(it) && 'id' in it ? it.id : it)
     }
 
-    for (const {type, path} of info.serialize) {
+    for (const {type, path, options = {}} of info.serialize) {
       const serializer = propSerializers.get(type)
       if (serializer != null) {
         value = modifyObject(value, path ?? '', value => (
-          value == null ? null : serializer.serialize(value)
+          value == null ? null : serializer.serialize(value, options)
         ))
       } else {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type

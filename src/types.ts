@@ -22,13 +22,14 @@ export const PropertyInfo: {
 }
 
 export interface PropertySerialization {
-  type:  any
-  path?: string
+  type:     any
+  path?:    string
+  options?: object
 }
 
-export interface PropertySerializer<T, S> {
-  deserialize: (serialized: S) => T
-  serialize:   (value: T) => S
+export interface PropertySerializer<T, S, O> {
+  deserialize: (serialized: S, options: O) => T
+  serialize:   (value: T, options: O) => S
 }
 
 export interface ModelConstructor<M extends Model> {
