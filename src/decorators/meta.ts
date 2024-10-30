@@ -1,8 +1,9 @@
+import Model from '../Model'
 import { assignMeta } from '../meta'
-import { ModelMeta } from '../types'
+import { ModelConstructor, ModelMetaInput } from '../types'
 
-export function meta(meta: ModelMeta): ClassDecorator {
-  return (target: any) => {
+export function meta<M extends Model>(meta: ModelMetaInput<M>) {
+  return (target: ModelConstructor<M>) => {
     assignMeta(target, meta)
   }
 }

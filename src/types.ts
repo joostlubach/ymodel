@@ -46,6 +46,10 @@ export type ModelData<M extends Model> = Omit<ModelAttributes<M>, 'id' | 'create
 export interface Context {}
 export interface ModelMeta {}
 
+export type ModelMetaInput<M extends Model> = {
+  [K in keyof ModelMeta]: ModelMeta[K] | ((item: M) => ModelMeta[K])
+}
+
 export type RefResolver<M extends Model> = (ref: Ref<M>, context: Context) => M | null
 export type RefExtractor<M extends Model> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<M>, serialized: ModelSerialized, context: Context) => IDOf<M> | null
 
