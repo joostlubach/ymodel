@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+import { ModelConstructor } from 'ymodel'
 import { Constructor } from 'ytil'
 import ModelSerialization from './ModelSerializer'
 import { Context, ModelSerialized } from './types'
@@ -12,6 +14,17 @@ export default abstract class Model {
       configurable: false,
       writable:     false,
     })
+  }
+
+  public static build<M extends Model>(this: ModelConstructor<M>, data: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M {
+    return (this as unknown as ModelConstructor<M>).deserialize({
+      id: null,
+
+      ...data,
+
+      updated_at: DateTime.local(),
+      created_at: DateTime.local(),
+    }, ...context)
   }
 
   public copy(...context: {} extends Context ? [] : [context: Context]) {
@@ -51,7 +64,7 @@ export default abstract class Model {
 
   protected afterDeserialize() {}
 
-  public update(updates: Record<string, any>, context: Context): this {
+  public modify(updates: Record<string, any>, context: Context): this {
     return (this.constructor as any).deserialize({
       ...this.$serialized,
       ...updates,
