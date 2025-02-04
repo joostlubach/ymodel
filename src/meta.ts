@@ -11,6 +11,13 @@ export function assignMeta(target: ModelConstructor<any>, meta: ModelMetaInput<a
   })
 }
 
+export function getModelClassMeta<M extends Model>(Model: ModelConstructor<M>): ModelMeta | null {
+  const input = metas.get(Model) as ModelMetaInput<M>
+  if (input == null) { return null }
+
+  return input as ModelMeta
+}
+
 export function getModelMeta<M extends Model>(model: M): ModelMeta | null {
   const input = metas.get(model.constructor as ModelConstructor<M>) as ModelMetaInput<M>
   if (input == null) { return null }
