@@ -11,15 +11,9 @@ export function assignMeta(target: ModelConstructor<any>, meta: ModelMetaInput<a
   })
 }
 
-export function getModelClassMeta<M extends Model>(Model: ModelConstructor<M>): ModelMeta | null {
-  const input = metas.get(Model) as ModelMetaInput<M>
-  if (input == null) { return null }
-
-  return input as ModelMeta
-}
-
-export function getModelMeta<M extends Model>(model: M): ModelMeta | null {
-  const input = metas.get(model.constructor as ModelConstructor<M>) as ModelMetaInput<M>
+export function modelMeta<M extends Model>(model: M | ModelConstructor<M>): ModelMeta | null {
+  const ModelClass = model instanceof Model ? model.constructor as ModelConstructor<M> : model
+  const input = metas.get(ModelClass) as ModelMetaInput<M>
   if (input == null) { return null }
 
   const meta: Record<string, any> = {}
@@ -32,4 +26,9 @@ export function getModelMeta<M extends Model>(model: M): ModelMeta | null {
   }
 
   return meta as ModelMeta
+}
+
+export function modelName<M extends Model>(model: M | ModelConstructor<M>): string {
+  const ModelClass = model instanceof Model ? model.constructor as ModelConstructor<M> : model
+  return modelMeta(model)?.name ?? ModelClass.name
 }

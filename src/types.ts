@@ -44,7 +44,9 @@ export type ModelAttributes<M extends Model> = Omit<{[K in keyof M as M[K] exten
 export type ModelData<M extends Model> = Omit<ModelAttributes<M>, 'id' | 'created_at' | 'updated_at'>
 
 export interface Context {}
-export interface ModelMeta {}
+export interface ModelMeta {
+  name?: string
+}
 
 export type ModelMetaInput<M extends Model> = {
   [K in keyof ModelMeta]: ModelMeta[K] | ((item: M) => ModelMeta[K])
