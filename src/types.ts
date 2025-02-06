@@ -45,7 +45,7 @@ export type ModelData<M extends Model> = Omit<ModelAttributes<M>, 'id' | 'create
 
 export interface Context {}
 export interface ModelMeta {
-  name?: string
+  name: string
 }
 
 export type ModelMetaInput<M extends Model> = {
