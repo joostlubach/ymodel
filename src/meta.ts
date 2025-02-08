@@ -11,17 +11,19 @@ export function assignMeta(target: ModelConstructor<any>, meta: ModelMetaInput<a
   })
 }
 
-export function modelMeta<M extends Model>(model: M | ModelConstructor<M>): ModelMeta | null {
-  const ModelClass = model instanceof Model ? model.constructor as ModelConstructor<M> : model
+export function modelMeta<M extends Model>(arg: M | ModelConstructor<M>): ModelMeta {
+  const ModelClass = arg instanceof Model ? arg.constructor as ModelConstructor<M> : arg
   const input = metas.get(ModelClass) as ModelMetaInput<M>
-  if (input == null) { return null }
+  if (input == null) {
+    throw new Error(`No meta assigned to model ${ModelClass.name}`)
+  } 
 
   const meta: Record<string, any> = {}
   for (const entry of objectEntries(input)) {
     const key = entry[0] as any
     const inp = entry[1] as any
 
-    const value = isFunction(inp) ? inp(model) : inp
+    const value = isFunction(inp) ? inp(arg === ModelClass ? null : arg) : inp
     meta[key] = value
   }
 

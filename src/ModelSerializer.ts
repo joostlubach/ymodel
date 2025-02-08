@@ -1,5 +1,5 @@
-import { isArray, isObject } from 'lodash'
-import { Constructor, modifyObject, monad, sparse } from 'ytil'
+import { isObject } from 'lodash'
+import { Constructor, isFunction, modifyObject, monad, sparse } from 'ytil'
 import Model from './Model'
 import { getRefExtractors, Ref } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
@@ -62,6 +62,8 @@ export default class ModelSerializer {
   public deserializeInto(model: Model, serialized: ModelSerialized, context: Context) {
     for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(model))) {
       if (prop === '$serialized') { continue }
+      if (descriptor.enumerable !== true) { continue }
+      if (isFunction(descriptor.value)) { continue }
 
       Object.defineProperty(model, prop, {
         ...descriptor,
@@ -108,7 +110,7 @@ export default class ModelSerializer {
         ))
       } else {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type
-        console.warn(`Prop [${prop}]: no serializer found for type \`${typeName}\``)
+        console.warn(`Prop [${this.Model.name}.${prop}]: no serializer found for type \`${typeName}\``)
       }
     }
     
@@ -124,12 +126,8 @@ export default class ModelSerializer {
       
       return monad.map(idOrRef, id => new Ref(refInfo, id, context))
     }
-  
-    const fields = sparse(propInfo.fields ?? [prop])
-    const value = fields.reduce<any>((value, field) => {
-      return value === undefined ? serialized[field] : value
-    }, undefined)
-    return isArray(value) ? [] : null
+
+    throw new Error(`Prop [${this.Model.name}.${prop}]: no ref extractor found`)
   }
 
   public serializePropInto(serialized: ModelSerialized, prop: string, value: any) {
@@ -148,7 +146,7 @@ export default class ModelSerializer {
         ))
       } else {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type
-        console.warn(`Prop [${prop}]: no serializer found for type \`${typeName}\``)
+        console.warn(`Prop [${this.Model.name}.${prop}]: no serializer found for type \`${typeName}\``)
       }
     }
 
