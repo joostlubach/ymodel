@@ -49,7 +49,7 @@ export interface ModelMeta {
 }
 
 export type ModelMetaInput<M extends Model> = {
-  [K in keyof ModelMeta]: ModelMeta[K] | ((item: M | null) => ModelMeta[K])
+  [K in keyof ModelMeta]: ModelMeta[K] | ((item: M | null, context: Context) => ModelMeta[K])
 }
 
 export type RefResolver<M extends Model> = (ref: Ref<M>, context: Context) => M | null
