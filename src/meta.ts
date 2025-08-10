@@ -1,19 +1,19 @@
 import { isFunction, objectEntries } from 'ytil'
-import Model from './Model'
-import { Context, ModelConstructor, ModelMeta, ModelMetaInput } from './types'
+import Entity from './Entity'
+import { Context, EntityClass, ModelMeta, ModelMetaInput } from './types'
 
-const metas: Map<ModelConstructor<any>, ModelMetaInput<any>> = new Map()
+const metas: Map<EntityClass<any>, ModelMetaInput<any>> = new Map()
 
-export function assignMeta(target: ModelConstructor<any>, meta: ModelMetaInput<any>) {
+export function assignMeta(target: EntityClass<any>, meta: ModelMetaInput<any>) {
   metas.set(target, {
     ...metas.get(target),
     ...meta,
   })
 }
 
-export function modelMeta<M extends Model>(arg: M | ModelConstructor<M>, context: Context): ModelMeta {
-  const ModelClass = arg instanceof Model ? arg.constructor as ModelConstructor<M> : arg
-  const input = metas.get(ModelClass) as ModelMetaInput<M>
+export function modelMeta<E extends Entity>(arg: M | EntityClass<E>, context: Context): ModelMeta {
+  const ModelClass = arg instanceof Entity ? arg.constructor as EntityClass<E> : arg
+  const input = metas.get(ModelClass) as ModelMetaInput<E>
   if (input == null) {
     throw new Error(`No meta assigned to model ${ModelClass.name}`)
   } 
@@ -30,7 +30,7 @@ export function modelMeta<M extends Model>(arg: M | ModelConstructor<M>, context
   return meta as ModelMeta
 }
 
-export function modelName<M extends Model>(model: M | ModelConstructor<M>, context: Context): string {
-  const ModelClass = model instanceof Model ? model.constructor as ModelConstructor<M> : model
+export function modelName<E extends Entity>(model: M | EntityClass<E>, context: Context): string {
+  const ModelClass = model instanceof Entity ? model.constructor as EntityClass<E> : model
   return modelMeta(model, context)?.name ?? ModelClass.name
 }

@@ -1,10 +1,10 @@
 import { DateTime } from 'luxon'
-import { ModelConstructor } from 'ymodel'
+import { EntityClass } from 'ymodel'
 import { Constructor } from 'ytil'
-import ModelSerialization from './ModelSerializer'
+import ModelSerialization from './EntitySerializer'
 import { Context, ModelSerialized } from './types'
 
-export default abstract class Model {
+export default abstract class Entity {
 
   constructor(
     private readonly $serialized: ModelSerialized,
@@ -16,8 +16,8 @@ export default abstract class Model {
     })
   }
 
-  public static build<M extends Model>(this: ModelConstructor<M>, data: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M {
-    return (this as unknown as ModelConstructor<M>).deserialize({
+  public static build<E extends Entity>(this: EntityClass<E>, data: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M {
+    return (this as unknown as EntityClass<E>).deserialize({
       id: null,
 
       ...data,
@@ -34,7 +34,7 @@ export default abstract class Model {
   //------
   // Serialization
 
-  public static deserialize<M extends Model>(this: Constructor<M>, raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M {
+  public static deserialize<E extends Entity>(this: Constructor<E>, raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M {
     const model = new (this as any)(raw) as M
     model.deserialize((context as any[])[0] ?? {})
     return model
@@ -45,7 +45,7 @@ export default abstract class Model {
     return serialization.serializePartial(this)
   }
 
-  public static serializePartial<M extends Model>(this: Constructor<M>, model: Partial<M>): ModelSerialized {
+  public static serializePartial<E extends Entity>(this: Constructor<E>, model: Partial<E>): ModelSerialized {
     const serialization = ModelSerialization.for(this)
     return serialization.serializePartial(model)
   }

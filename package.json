@@ -17,7 +17,7 @@
     "typescript": "*"
   },
   "devDependencies": {
-    "typescript": "5.4.3"
+    "typescript": "^5.9.2"
   },
   "packageManager": "pnpm@9.9.0",
   "dependencies": {
