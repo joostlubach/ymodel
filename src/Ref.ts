@@ -9,7 +9,7 @@ export class Ref<E extends Entity> {
     private readonly context: Context
   ) {}
 
-  public get(): M | null {
+  public get(): E | null {
     for (const resolver of resolvers) {
       const model = resolver(this, this.context)
       if (model != null) return model

@@ -11,7 +11,7 @@ export function assignMeta(target: EntityClass<any>, meta: ModelMetaInput<any>) 
   })
 }
 
-export function modelMeta<E extends Entity>(arg: M | EntityClass<E>, context: Context): ModelMeta {
+export function modelMeta<E extends Entity>(arg: E | EntityClass<E>, context: Context): ModelMeta {
   const ModelClass = arg instanceof Entity ? arg.constructor as EntityClass<E> : arg
   const input = metas.get(ModelClass) as ModelMetaInput<E>
   if (input == null) {
@@ -30,7 +30,7 @@ export function modelMeta<E extends Entity>(arg: M | EntityClass<E>, context: Co
   return meta as ModelMeta
 }
 
-export function modelName<E extends Entity>(model: M | EntityClass<E>, context: Context): string {
+export function modelName<E extends Entity>(model: E | EntityClass<E>, context: Context): string {
   const ModelClass = model instanceof Entity ? model.constructor as EntityClass<E> : model
   return modelMeta(model, context)?.name ?? ModelClass.name
 }

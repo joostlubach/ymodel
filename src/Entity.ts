@@ -16,7 +16,7 @@ export default abstract class Entity {
     })
   }
 
-  public static build<E extends Entity>(this: EntityClass<E>, data: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M {
+  public static build<E extends Entity>(this: EntityClass<E>, data: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E {
     return (this as unknown as EntityClass<E>).deserialize({
       id: null,
 
@@ -34,8 +34,8 @@ export default abstract class Entity {
   //------
   // Serialization
 
-  public static deserialize<E extends Entity>(this: Constructor<E>, raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M {
-    const model = new (this as any)(raw) as M
+  public static deserialize<E extends Entity>(this: Constructor<E>, raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E {
+    const model = new (this as any)(raw) as E
     model.deserialize((context as any[])[0] ?? {})
     return model
   }
