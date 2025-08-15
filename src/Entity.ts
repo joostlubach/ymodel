@@ -35,9 +35,9 @@ export default abstract class Entity {
   // Serialization
 
   public static deserialize<E extends Entity>(this: Constructor<E>, raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E {
-    const model = new (this as any)(raw) as E
-    model.deserialize((context as any[])[0] ?? {})
-    return model
+    const entity = new (this as any)(raw) as E
+    entity.deserialize((context as any[])[0] ?? {})
+    return entity
   }
 
   public serialize(): ModelSerialized {
@@ -45,9 +45,9 @@ export default abstract class Entity {
     return serialization.serializePartial(this)
   }
 
-  public static serializePartial<E extends Entity>(this: Constructor<E>, model: Partial<E>): ModelSerialized {
+  public static serializePartial<E extends Entity>(this: Constructor<E>, entity: Partial<E>): ModelSerialized {
     const serialization = ModelSerialization.for(this)
-    return serialization.serializePartial(model)
+    return serialization.serializePartial(entity)
   }
 
   protected deserialize(context: Context) {

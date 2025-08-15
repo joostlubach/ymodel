@@ -11,8 +11,8 @@ export class Ref<E extends Entity> {
 
   public get(): E | null {
     for (const resolver of resolvers) {
-      const model = resolver(this, this.context)
-      if (model != null) return model
+      const entity = resolver(this, this.context)
+      if (entity != null) return entity
     }
 
     return null

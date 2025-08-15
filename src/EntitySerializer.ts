@@ -59,13 +59,13 @@ export default class ModelSerializer {
   //------
   // Serialization
 
-  public deserializeInto(model: Entity, serialized: ModelSerialized, context: Context) {
-    for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(model))) {
+  public deserializeInto(entity: Entity, serialized: ModelSerialized, context: Context) {
+    for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(entity))) {
       if (prop === '$serialized') { continue }
       if (descriptor.enumerable !== true) { continue }
       if (isFunction(descriptor.value)) { continue }
 
-      Object.defineProperty(model, prop, {
+      Object.defineProperty(entity, prop, {
         ...descriptor,
         value:        this.deserializeProp(prop, serialized, context),
         configurable: false,
@@ -73,13 +73,13 @@ export default class ModelSerializer {
     }
   }
 
-  public serializePartial(model: Partial<Entity>) {
+  public serializePartial(entity: Partial<Entity>) {
     const serialized: ModelSerialized = {}
-    for (const prop of Object.getOwnPropertyNames(model)) {
-      const info = Object.getOwnPropertyDescriptor(model, prop)
+    for (const prop of Object.getOwnPropertyNames(entity)) {
+      const info = Object.getOwnPropertyDescriptor(entity, prop)
       if (info?.enumerable !== true) { continue }
 
-      const value = (model as any)[prop]
+      const value = (entity as any)[prop]
       this.serializePropInto(serialized, prop, value)
     }
 

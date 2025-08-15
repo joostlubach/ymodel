@@ -9,7 +9,7 @@ export interface PropertyInfo {
 }
 
 export interface RefInfo<E extends Entity> {
-  model:    string | EntityClass<E>
+  entity:   string | EntityClass<E>
   idField?: string
 }
 
@@ -36,7 +36,7 @@ export interface EntityClass<E extends Entity> {
   new (...args: any[]): E
 
   deserialize<E extends Entity>(raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E
-  serializePartial<E extends Entity>(model: Partial<EntityAttributes<E>>): ModelSerialized
+  serializePartial<E extends Entity>(entity: Partial<EntityAttributes<E>>): ModelSerialized
 }
 export type ModelSerialized = Record<string, any>
 

@@ -11,11 +11,11 @@ export function assignMeta(target: EntityClass<any>, meta: ModelMetaInput<any>) 
   })
 }
 
-export function modelMeta<E extends Entity>(arg: E | EntityClass<E>, context: Context): ModelMeta {
-  const ModelClass = arg instanceof Entity ? arg.constructor as EntityClass<E> : arg
-  const input = metas.get(ModelClass) as ModelMetaInput<E>
+export function entityMeta<E extends Entity>(arg: E | EntityClass<E>, context: Context): ModelMeta {
+  const EntityConstructor = arg instanceof Entity ? arg.constructor as EntityClass<E> : arg
+  const input = metas.get(EntityConstructor) as ModelMetaInput<E>
   if (input == null) {
-    throw new Error(`No meta assigned to model ${ModelClass.name}`)
+    throw new Error(`No meta assigned to entity ${EntityConstructor.name}`)
   } 
 
   const meta: Record<string, any> = {}
@@ -23,14 +23,14 @@ export function modelMeta<E extends Entity>(arg: E | EntityClass<E>, context: Co
     const key = entry[0] as any
     const inp = entry[1] as any
 
-    const value = isFunction(inp) ? inp(arg === ModelClass ? null : arg, context) : inp
+    const value = isFunction(inp) ? inp(arg === EntityConstructor ? null : arg, context) : inp
     meta[key] = value
   }
 
   return meta as ModelMeta
 }
 
-export function modelName<E extends Entity>(model: E | EntityClass<E>, context: Context): string {
-  const ModelClass = model instanceof Entity ? model.constructor as EntityClass<E> : model
-  return modelMeta(model, context)?.name ?? ModelClass.name
+export function modelName<E extends Entity>(entity: E | EntityClass<E>, context: Context): string {
+  const EntityConstructor = entity instanceof Entity ? entity.constructor as EntityClass<E> : entity
+  return entityMeta(entity, context)?.name ?? EntityConstructor.name
 }
