@@ -124,7 +124,7 @@ export default class ModelSerializer {
       const idOrRef = extractor(prop, propInfo, refInfo, serialized, context)
       if (idOrRef === undefined) { continue }
       
-      return monad.map(idOrRef, id => new Ref(refInfo, id, context))
+      return monad.map(idOrRef, id => id == null ? null : new Ref(refInfo, id, context))
     }
 
     throw new Error(`Prop [${this.Entity.name}.${prop}]: no ref extractor found`)
