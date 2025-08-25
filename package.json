@@ -13,11 +13,8 @@
     "check": "tsc -p . --noEmit",
     "test": "NODE_ENV=test jest"
   },
-  "peerDependencies": {
-    "typescript": "*"
-  },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.8.3"
   },
   "packageManager": "pnpm@9.9.0",
   "dependencies": {
