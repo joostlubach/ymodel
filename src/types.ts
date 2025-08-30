@@ -35,10 +35,10 @@ export interface PropertySerializer<T, S, O> {
 export interface EntityClass<E extends Entity> {
   new (...args: any[]): E
 
-  deserialize<E extends Entity>(raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E
-  serializePartial<E extends Entity>(entity: Partial<EntityAttributes<E>>): ModelSerialized
+  deserialize<E extends Entity>(raw: EntitySerialized, ...context: {} extends Context ? [] : [context: Context]): E
+  serializePartial<E extends Entity>(entity: Partial<EntityAttributes<E>>): EntitySerialized
 }
-export type ModelSerialized = Record<string, any>
+export type EntitySerialized = Record<string, any>
 
 export type EntityAttributes<E extends Entity> = Omit<{[K in keyof E as E[K] extends AnyFunction ? never : K]: E[K]}, '$serialized'>
 export type EntityData<E extends Entity> = Omit<EntityAttributes<E>, 'id' | 'created_at' | 'updated_at'>
@@ -53,7 +53,7 @@ export type ModelMetaInput<E extends Entity> = {
 }
 
 export type RefResolver<E extends Entity> = (ref: Ref<E>, context: Context) => E | null
-export type RefExtractor<E extends Entity> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<E>, serialized: ModelSerialized, context: Context) => IDOf<E> | null
+export type RefExtractor<E extends Entity> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<E>, serialized: EntitySerialized, context: Context) => IDOf<E> | null
 
 // Gracious ID extractor - if unknown, defaults to `any` instead of `never`.
 export type IDOf<E extends Entity> = E extends {id: infer ID} ? ID : any

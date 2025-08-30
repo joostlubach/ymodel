@@ -3,7 +3,7 @@ import { Constructor, isFunction, modifyObject, monad, sparse } from 'ytil'
 import Entity from './Entity'
 import { getRefExtractors, Ref } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
-import { Context, ModelSerialized, PropertyInfo, RefInfo } from './types'
+import { Context, EntitySerialized, PropertyInfo, RefInfo } from './types'
 import { resolveConstructor, resolveSuperCtor } from './util'
 
 export default class ModelSerializer {
@@ -59,7 +59,7 @@ export default class ModelSerializer {
   //------
   // Serialization
 
-  public deserializeInto(entity: Entity, serialized: ModelSerialized, context: Context) {
+  public deserializeInto(entity: Entity, serialized: EntitySerialized, context: Context) {
     for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(entity))) {
       if (prop === '$serialized') { continue }
       if (descriptor.enumerable !== true) { continue }
@@ -74,7 +74,7 @@ export default class ModelSerializer {
   }
 
   public serializePartial(entity: Partial<Entity>) {
-    const serialized: ModelSerialized = {}
+    const serialized: EntitySerialized = {}
     for (const prop of Object.getOwnPropertyNames(entity)) {
       const info = Object.getOwnPropertyDescriptor(entity, prop)
       if (info?.enumerable !== true) { continue }
@@ -86,7 +86,7 @@ export default class ModelSerializer {
     return serialized
   }
 
-  public deserializeProp(prop: string, serialized: ModelSerialized, context: Context) {
+  public deserializeProp(prop: string, serialized: EntitySerialized, context: Context) {
     const info = this.propInfo(prop)
 
     if (info.ref != null) {
@@ -96,7 +96,7 @@ export default class ModelSerializer {
     }
   }
 
-  private deserializePropValue(prop: string, info: PropertyInfo, serialized: ModelSerialized) {
+  private deserializePropValue(prop: string, info: PropertyInfo, serialized: EntitySerialized) {
     const fields = sparse(info.fields ?? [prop])
     let value = fields.reduce<any>((value, field) => {
       return value === undefined ? serialized[field] : value
@@ -117,7 +117,7 @@ export default class ModelSerializer {
     return value
   }
 
-  private deserializeRef(prop: string, propInfo: PropertyInfo, refInfo: RefInfo<Entity>, serialized: ModelSerialized, context: Context) {
+  private deserializeRef(prop: string, propInfo: PropertyInfo, refInfo: RefInfo<Entity>, serialized: EntitySerialized, context: Context) {
     const extractors = getRefExtractors()
 
     for (const extractor of extractors) {
@@ -130,7 +130,7 @@ export default class ModelSerializer {
     throw new Error(`Prop [${this.Entity.name}.${prop}]: no ref extractor found`)
   }
 
-  public serializePropInto(serialized: ModelSerialized, prop: string, value: any) {
+  public serializePropInto(serialized: EntitySerialized, prop: string, value: any) {
     const info = this.propInfo(prop)
     const destProp = sparse(info.fields ?? [prop]).shift()!
 

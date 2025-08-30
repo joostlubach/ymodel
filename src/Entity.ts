@@ -2,12 +2,12 @@ import { DateTime } from 'luxon'
 import { EntityClass } from 'ymodel'
 import { Constructor } from 'ytil'
 import ModelSerialization from './EntitySerializer'
-import { Context, ModelSerialized } from './types'
+import { Context, EntitySerialized } from './types'
 
 export default abstract class Entity {
 
   constructor(
-    private readonly $serialized: ModelSerialized,
+    private readonly $serialized: EntitySerialized,
   ) {
     Object.defineProperty(this, '$serialized', {
       enumerable:   false,
@@ -16,7 +16,7 @@ export default abstract class Entity {
     })
   }
 
-  public static build<E extends Entity>(this: EntityClass<E>, data: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E {
+  public static build<E extends Entity>(this: EntityClass<E>, data: EntitySerialized, ...context: {} extends Context ? [] : [context: Context]): E {
     return (this as unknown as EntityClass<E>).deserialize({
       id: null,
 
@@ -34,18 +34,18 @@ export default abstract class Entity {
   //------
   // Serialization
 
-  public static deserialize<E extends Entity>(this: Constructor<E>, raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E {
+  public static deserialize<E extends Entity>(this: Constructor<E>, raw: EntitySerialized, ...context: {} extends Context ? [] : [context: Context]): E {
     const entity = new (this as any)(raw) as E
     entity.deserialize((context as any[])[0] ?? {})
     return entity
   }
 
-  public serialize(): ModelSerialized {
+  public serialize(): EntitySerialized {
     const serialization = ModelSerialization.for(this)
     return serialization.serializePartial(this)
   }
 
-  public static serializePartial<E extends Entity>(this: Constructor<E>, entity: Partial<E>): ModelSerialized {
+  public static serializePartial<E extends Entity>(this: Constructor<E>, entity: Partial<E>): EntitySerialized {
     const serialization = ModelSerialization.for(this)
     return serialization.serializePartial(entity)
   }
@@ -58,7 +58,7 @@ export default abstract class Entity {
     this.afterDeserialize()
   }
 
-  protected beforeDeserialize(serialized: ModelSerialized) {
+  protected beforeDeserialize(serialized: EntitySerialized) {
     return serialized
   }
 
