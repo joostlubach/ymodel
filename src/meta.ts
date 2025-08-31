@@ -1,19 +1,19 @@
 import { isFunction, objectEntries } from 'ytil'
 import Entity from './Entity'
-import { Context, EntityClass, ModelMeta, ModelMetaInput } from './types'
+import { Context, EntityClass, EntityMeta, EntityMetaInput } from './types'
 
-const metas: Map<EntityClass<any>, ModelMetaInput<any>> = new Map()
+const metas: Map<EntityClass<any>, EntityMetaInput<any>> = new Map()
 
-export function assignMeta(target: EntityClass<any>, meta: ModelMetaInput<any>) {
+export function assignMeta(target: EntityClass<any>, meta: EntityMetaInput<any>) {
   metas.set(target, {
     ...metas.get(target),
     ...meta,
   })
 }
 
-export function entityMeta<E extends Entity>(arg: E | EntityClass<E>, context: Context): ModelMeta {
+export function entityMeta<E extends Entity>(arg: E | EntityClass<E>, context: Context): EntityMeta {
   const EntityConstructor = arg instanceof Entity ? arg.constructor as EntityClass<E> : arg
-  const input = metas.get(EntityConstructor) as ModelMetaInput<E>
+  const input = metas.get(EntityConstructor) as EntityMetaInput<E>
   if (input == null) {
     throw new Error(`No meta assigned to entity ${EntityConstructor.name}`)
   } 
@@ -27,7 +27,7 @@ export function entityMeta<E extends Entity>(arg: E | EntityClass<E>, context: C
     meta[key] = value
   }
 
-  return meta as ModelMeta
+  return meta as EntityMeta
 }
 
 export function modelName<E extends Entity>(entity: E | EntityClass<E>, context: Context): string {

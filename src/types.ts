@@ -44,12 +44,12 @@ export type EntityAttributes<E extends Entity> = Omit<{[K in keyof E as E[K] ext
 export type EntityData<E extends Entity> = Omit<EntityAttributes<E>, 'id' | 'created_at' | 'updated_at'>
 
 export interface Context {}
-export interface ModelMeta {
+export interface EntityMeta {
   name: string
 }
 
-export type ModelMetaInput<E extends Entity> = {
-  [K in keyof ModelMeta]: ModelMeta[K] | ((item: E | null, context: Context) => ModelMeta[K])
+export type EntityMetaInput<E extends Entity> = {
+  [K in keyof EntityMeta]: EntityMeta[K] | ((item: E | null, context: Context) => EntityMeta[K])
 }
 
 export type RefResolver<E extends Entity> = (ref: Ref<E>, context: Context) => E | null
