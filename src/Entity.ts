@@ -6,15 +6,16 @@ import { Context, EntitySerialized } from './types'
 
 export default abstract class Entity {
 
-  constructor(
-    private readonly $serialized: EntitySerialized,
-  ) {
+  constructor(serialized: EntitySerialized) {
     Object.defineProperty(this, '$serialized', {
+      value:        serialized,
       enumerable:   false,
       configurable: false,
       writable:     false,
     })
   }
+
+  public readonly $serialized!: EntitySerialized
 
   public static build<E extends Entity>(this: EntityClass<E>, data: EntitySerialized, ...context: {} extends Context ? [] : [context: Context]): E {
     return (this as unknown as EntityClass<E>).deserialize({
