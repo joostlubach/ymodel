@@ -1,5 +1,5 @@
 import { isFunction, objectEntries } from 'ytil'
-import Entity from './Entity'
+import { Entity } from './Entity'
 import { Context, EntityClass, EntityMeta, EntityMetaInput } from './types'
 
 const metas: Map<EntityClass<any>, EntityMetaInput<any>> = new Map()

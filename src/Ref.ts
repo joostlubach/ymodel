@@ -1,4 +1,4 @@
-import Entity from './Entity'
+import { Entity } from './Entity'
 import { Context, IDOf, RefExtractor, RefInfo, RefResolver } from './types'
 
 export class Ref<E extends Entity> {

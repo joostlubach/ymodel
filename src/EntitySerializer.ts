@@ -1,6 +1,6 @@
 import { isObject } from 'lodash'
 import { Constructor, isFunction, modifyObject, monad, sparse } from 'ytil'
-import Entity from './Entity'
+import { Entity } from './Entity'
 import { getRefExtractors, Ref } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
 import { Context, EntitySerialized, PropertyInfo, RefInfo } from './types'

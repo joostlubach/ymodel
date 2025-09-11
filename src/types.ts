@@ -1,5 +1,5 @@
 import { AnyFunction } from 'ytil'
-import Entity from './Entity'
+import { Entity } from './Entity'
 import { Ref } from './Ref'
 
 export interface PropertyInfo {

@@ -1,4 +1,4 @@
-import Entity from '../Entity'
+import { Entity } from '../Entity'
 import ModelSerialization from '../EntitySerializer'
 import { EntityClass } from '../types'
 

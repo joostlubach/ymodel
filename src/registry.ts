@@ -1,5 +1,5 @@
 import { Constructor } from 'ytil'
-import Entity from './Entity'
+import { Entity } from './Entity'
 import ModelSerializer from './EntitySerializer'
 import { PropertySerializer } from './types'
 

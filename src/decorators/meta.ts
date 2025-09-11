@@ -1,4 +1,4 @@
-import Entity from '../Entity'
+import { Entity } from '../Entity'
 import { assignMeta } from '../meta'
 import { EntityClass, EntityMetaInput } from '../types'
 
