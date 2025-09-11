@@ -4,7 +4,7 @@ import { Constructor } from 'ytil'
 import ModelSerialization from './EntitySerializer'
 import { Context, EntitySerialized } from './types'
 
-export default abstract class Entity {
+export abstract class Entity {
 
   constructor(serialized: EntitySerialized) {
     Object.defineProperty(this, '$serialized', {
