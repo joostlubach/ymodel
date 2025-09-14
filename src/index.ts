@@ -4,4 +4,5 @@ export { Ref, refResolver, refExtractor } from './Ref'
 export { entityMeta, modelName } from './meta'
 
 export * from './decorators'
+export * from './util'
 export * from './types'
