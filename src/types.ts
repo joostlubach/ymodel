@@ -1,16 +1,15 @@
 import { AnyFunction } from 'ytil'
-
-import Model from './Model'
+import { Entity } from './Entity'
 import { Ref } from './Ref'
 
 export interface PropertyInfo {
-  field?:    string
-  ref?:      RefInfo<Model>
+  fields?:   string[]
+  ref?:      RefInfo<Entity>
   serialize: PropertySerialization[]
 }
 
-export interface RefInfo<M extends Model> {
-  model:    string | ModelConstructor<M>
+export interface RefInfo<E extends Entity> {
+  entity:   string | EntityClass<E>
   idField?: string
 }
 
@@ -23,31 +22,38 @@ export const PropertyInfo: {
 }
 
 export interface PropertySerialization {
-  type:  any
-  path?: string
+  type:     any
+  path?:    string
+  options?: object
 }
 
-export interface PropertySerializer<T, S> {
-  deserialize: (serialized: S) => T
-  serialize:   (value: T) => S
+export interface PropertySerializer<T, S, O> {
+  deserialize: (serialized: S, options: O) => T
+  serialize:   (value: T, options: O) => S
 }
 
-export interface ModelConstructor<M extends Model> {
-  new (...args: any[]): M
+export interface EntityClass<E extends Entity> {
+  new (...args: any[]): E
 
-  deserialize<M extends Model>(raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): M
-  serializePartial<M extends Model>(model: Partial<ModelAttributes<M>>): ModelSerialized
+  deserialize<E extends Entity>(raw: EntitySerialized, ...context: {} extends Context ? [] : [context: Context]): E
+  serializePartial<E extends Entity>(entity: Partial<EntityAttributes<E>>): EntitySerialized
 }
-export type ModelSerialized = Record<string, any>
+export type EntitySerialized = Record<string, any>
 
-export type ModelAttributes<M extends Model> = Omit<{[K in keyof M as M[K] extends AnyFunction ? never : K]: M[K]}, '$serialized'>
-export type ModelData<M extends Model> = Omit<ModelAttributes<M>, 'id' | 'created_at' | 'updated_at'>
+export type EntityAttributes<E extends Entity> = Omit<{[K in keyof E as E[K] extends AnyFunction ? never : K]: E[K]}, '$serialized'>
+export type EntityData<E extends Entity> = Omit<EntityAttributes<E>, 'id' | 'created_at' | 'updated_at'>
 
 export interface Context {}
-export interface ModelMeta {}
+export interface EntityMeta {
+  name: string
+}
 
-export type RefResolver<M extends Model> = (ref: Ref<M>, context: Context) => M | null
-export type RefExtractor<M extends Model> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<M>, serialized: ModelSerialized, context: Context) => IDOf<M> | null
+export type EntityMetaInput<E extends Entity> = {
+  [K in keyof EntityMeta]: EntityMeta[K] | ((item: E | null, context: Context) => EntityMeta[K])
+}
+
+export type RefResolver<E extends Entity> = (ref: Ref<E>, context: Context) => E | null
+export type RefExtractor<E extends Entity> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<E>, serialized: EntitySerialized, context: Context) => IDOf<E> | null
 
 // Gracious ID extractor - if unknown, defaults to `any` instead of `never`.
-export type IDOf<M extends Model> = M extends {id: infer ID} ? ID : any
+export type IDOf<E extends Entity> = E extends {id: infer ID} ? ID : any

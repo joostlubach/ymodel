@@ -1,18 +1,18 @@
-import Model from './Model'
+import { Entity } from './Entity'
 import { Context, IDOf, RefExtractor, RefInfo, RefResolver } from './types'
 
-export class Ref<M extends Model> {
+export class Ref<E extends Entity> {
 
   constructor(
-    public readonly info: RefInfo<M>,
-    public readonly id: IDOf<M>,
+    public readonly info: RefInfo<E>,
+    public readonly id: IDOf<E>,
     private readonly context: Context
   ) {}
 
-  public get(): M | null {
+  public get(): E | null {
     for (const resolver of resolvers) {
-      const model = resolver(this, this.context)
-      if (model != null) return model
+      const entity = resolver(this, this.context)
+      if (entity != null) return entity
     }
 
     return null
@@ -23,12 +23,12 @@ export class Ref<M extends Model> {
 const resolvers = new Set<RefResolver<any>>
 const extractors = new Set<RefExtractor<any>>
 
-export function refResolver<M extends Model>(resolver: RefResolver<M>) {
+export function refResolver<E extends Entity>(resolver: RefResolver<E>) {
   resolvers.add(resolver)
   return () => { resolvers.delete(resolver) }
 }
 
-export function refExtractor<M extends Model>(extractor: RefExtractor<M>) {
+export function refExtractor<E extends Entity>(extractor: RefExtractor<E>) {
   extractors.add(extractor)
   return () => { extractors.delete(extractor) }
 }

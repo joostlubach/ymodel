@@ -1,7 +1,8 @@
-export { default } from './Model'
+export { Entity } from './Entity'
 export { propSerializer } from './propSerializer'
 export { Ref, refResolver, refExtractor } from './Ref'
-export { getModelMeta, findModelWithMeta } from './meta'
+export { entityMeta, modelName } from './meta'
 
 export * from './decorators'
+export * from './util'
 export * from './types'

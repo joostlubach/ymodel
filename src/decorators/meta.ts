@@ -1,8 +1,9 @@
+import { Entity } from '../Entity'
 import { assignMeta } from '../meta'
-import { ModelMeta } from '../types'
+import { EntityClass, EntityMetaInput } from '../types'
 
-export function meta(meta: ModelMeta): ClassDecorator {
-  return (target: any) => {
+export function meta<E extends Entity>(meta: EntityMetaInput<E>) {
+  return (target: EntityClass<E>) => {
     assignMeta(target, meta)
   }
 }

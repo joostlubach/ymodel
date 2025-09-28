@@ -1,18 +1,18 @@
-import Model from '../Model'
-import ModelSerialization from '../ModelSerializer'
-import { ModelConstructor } from '../types'
+import { Entity } from '../Entity'
+import ModelSerialization from '../EntitySerializer'
+import { EntityClass } from '../types'
 
-export function ref<M extends Model>(model: ModelConstructor<M> | string, options: RefOptions = {}): PropertyDecorator {
+export function ref<E extends Entity>(entity: EntityClass<E> | string, options: RefOptions = {}): PropertyDecorator {
   const {field, ...rest} = options
 
   return (target: any, key: string | symbol): any => {
     const serialization = ModelSerialization.for(target)
     serialization.modify(key as string, info => {
       if (field != null) {
-        info.field = field
+        info.fields = [field]
       }
       info.ref = {
-        model,
+        entity,
         ...rest,
       }
     })

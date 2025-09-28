@@ -1,13 +1,17 @@
-import ModelSerialization from '../ModelSerializer'
+import ModelSerialization from '../EntitySerializer'
 
 export function serialize(type: Function, options: SerializerDecoratorOptions = {}): PropertyDecorator {
   return (target, key) => {
     ModelSerialization.for(target).modify(key, info => {
-      info.serialize.push({type, ...options})
+      const {path, ...rest} = options
+      info.serialize.push({type, path, options: rest})
     })
   }
 }
 
 export interface SerializerDecoratorOptions {
   path?: string
+
+  // Additional options for the serializer.
+  [key: string]: any
 }
