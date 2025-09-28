@@ -4,12 +4,22 @@
   "description": "Easy to use model base class with basic deserialization support.",
   "author": "Joost Lubach",
   "license": "MIT",
-  "main": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/cjs/index.js"
+    }
   },
   "scripts": {
+    "build": "npm run clean && npm run build:tsc",
+    "build:tsc": "npm run build:tsc:esm && npm run build:tsc:cjs",
+    "build:tsc:esm": "tsc -p tsconfig.prod.json --module esnext --outDir dist/esm --declarationDir dist/types",
+    "build:tsc:cjs": "tsc -p tsconfig.prod.json --module commonjs --outDir dist/cjs --declaration false --declarationMap false",
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
     "lint": "eslint src --ext ts,tsx",
     "check": "tsc -p . --noEmit",
     "test": "NODE_ENV=test jest"
@@ -18,9 +28,8 @@
     "typescript": "*"
   },
   "devDependencies": {
-    "typescript": "5.4.3"
+    "typescript": "^5.8.3"
   },
-  "packageManager": "pnpm@9.9.0",
   "dependencies": {
     "ytil": "workspace:^"
   }
