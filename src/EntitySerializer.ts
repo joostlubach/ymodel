@@ -1,7 +1,7 @@
 import { isObject } from 'lodash'
 import { Constructor, isFunction, modifyObject, monad, sparse } from 'ytil'
 import { Entity } from './Entity'
-import { getRefExtractors, Ref } from './Ref'
+import { getRefExtractors } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
 import { Context, EntitySerialized, PropertyInfo, RefInfo } from './types'
 import { resolveConstructor, resolveSuperCtor } from './util'
@@ -121,10 +121,10 @@ export default class ModelSerializer {
     const extractors = getRefExtractors()
 
     for (const extractor of extractors) {
-      const idOrRef = extractor(prop, propInfo, refInfo, serialized, context)
-      if (idOrRef === undefined) { continue }
+      const refs = extractor(prop, propInfo, refInfo, serialized, context)
+      if (refs === undefined) { continue }
       
-      return monad.map(idOrRef, id => id == null ? null : new Ref(refInfo, id, context))
+      return refs
     }
 
     throw new Error(`Prop [${this.Entity.name}.${prop}]: no ref extractor found`)

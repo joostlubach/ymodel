@@ -1,2 +1,2 @@
 export * from './constructors'
-export * from './inlineRefsDeep'
+export * from './flattenRefs'

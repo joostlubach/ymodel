@@ -5,7 +5,7 @@ import { EntityClass } from '../types'
 export function ref<E extends Entity>(entity: (() => EntityClass<E>) | string, options: RefOptions = {}): PropertyDecorator {
   const {field, ...rest} = options
 
-  return (target: any, key: string | symbol): any => {
+  return (target: any, key: string | symbol): void => {
     const serialization = ModelSerialization.for(target)
     serialization.modify(key as string, info => {
       if (field != null) {

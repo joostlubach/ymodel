@@ -53,7 +53,7 @@ export type EntityMetaInput<E extends Entity> = {
 }
 
 export type RefResolver<E extends Entity> = (ref: Ref<E>, context: Context) => E | null
-export type RefExtractor<E extends Entity> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<E>, serialized: EntitySerialized, context: Context) => IDOf<E> | null
+export type RefExtractor<E extends Entity> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<E>, serialized: EntitySerialized, context: Context) => Ref<E> | undefined
 
 // Gracious ID extractor - if unknown, defaults to `any` instead of `never`.
 export type IDOf<E extends Entity> = E extends {id: infer ID} ? ID : any
