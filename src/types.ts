@@ -9,7 +9,7 @@ export interface PropertyInfo {
 }
 
 export interface RefInfo<E extends Entity> {
-  entity:   string | EntityClass<E>
+  entity:   (() => EntityClass<E>) | string
   idField?: string
 }
 

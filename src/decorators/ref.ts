@@ -2,7 +2,7 @@ import { Entity } from '../Entity'
 import ModelSerialization from '../EntitySerializer'
 import { EntityClass } from '../types'
 
-export function ref<E extends Entity>(entity: EntityClass<E> | string, options: RefOptions = {}): PropertyDecorator {
+export function ref<E extends Entity>(entity: (() => EntityClass<E>) | string, options: RefOptions = {}): PropertyDecorator {
   const {field, ...rest} = options
 
   return (target: any, key: string | symbol): any => {
