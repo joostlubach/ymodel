@@ -1,9 +1,9 @@
-import { Entity } from '../Entity'
+import { Model } from '../Model'
 import { assignMeta } from '../meta'
-import { EntityClass, EntityMetaInput } from '../types'
+import { ModelConstructor, ModelMetaInput } from '../types'
 
-export function meta<E extends Entity>(meta: EntityMetaInput<E>) {
-  return (target: EntityClass<E>) => {
+export function meta<E extends Model>(meta: ModelMetaInput<E>) {
+  return (target: ModelConstructor<E>) => {
     assignMeta(target, meta)
   }
 }

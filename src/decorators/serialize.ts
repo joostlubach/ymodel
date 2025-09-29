@@ -1,4 +1,4 @@
-import ModelSerialization from '../EntitySerializer'
+import ModelSerialization from '../ModelSerializer'
 
 export function serialize(type: Function, options: SerializerDecoratorOptions = {}): PropertyDecorator {
   return (target, key) => {

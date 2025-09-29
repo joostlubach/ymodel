@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
 import { Constructor } from 'ytil'
-import ModelSerialization from './EntitySerializer'
-import { Context, EntityClass, EntitySerialized } from './types'
+import ModelSerialization from './ModelSerializer'
+import { Context, ModelConstructor, ModelSerialized } from './types'
 
-export abstract class Entity {
+export abstract class Model {
 
-  constructor(serialized: EntitySerialized) {
+  constructor(serialized: ModelSerialized) {
     Object.defineProperty(this, '$serialized', {
       value:        serialized,
       enumerable:   false,
@@ -14,10 +14,10 @@ export abstract class Entity {
     })
   }
 
-  public readonly $serialized!: EntitySerialized
+  public readonly $serialized!: ModelSerialized
 
-  public static build<E extends Entity>(this: EntityClass<E>, data: EntitySerialized, ...context: {} extends Context ? [] : [context: Context]): E {
-    return (this as unknown as EntityClass<E>).deserialize({
+  public static build<E extends Model>(this: ModelConstructor<E>, data: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E {
+    return (this as unknown as ModelConstructor<E>).deserialize({
       id: null,
 
       ...data,
@@ -34,20 +34,20 @@ export abstract class Entity {
   //------
   // Serialization
 
-  public static deserialize<E extends Entity>(this: Constructor<E>, raw: EntitySerialized, ...context: {} extends Context ? [] : [context: Context]): E {
-    const entity = new (this as any)(raw) as E
-    entity.deserialize((context as any[])[0] ?? {})
-    return entity
+  public static deserialize<E extends Model>(this: Constructor<E>, raw: ModelSerialized, ...context: {} extends Context ? [] : [context: Context]): E {
+    const model = new (this as any)(raw) as E
+    model.deserialize((context as any[])[0] ?? {})
+    return model
   }
 
-  public serialize(): EntitySerialized {
+  public serialize(): ModelSerialized {
     const serialization = ModelSerialization.for(this)
     return serialization.serializePartial(this)
   }
 
-  public static serializePartial<E extends Entity>(this: Constructor<E>, entity: Partial<E>): EntitySerialized {
+  public static serializePartial<E extends Model>(this: Constructor<E>, model: Partial<E>): ModelSerialized {
     const serialization = ModelSerialization.for(this)
-    return serialization.serializePartial(entity)
+    return serialization.serializePartial(model)
   }
 
   protected deserialize(context: Context) {
@@ -58,7 +58,7 @@ export abstract class Entity {
     this.afterDeserialize()
   }
 
-  protected beforeDeserialize(serialized: EntitySerialized) {
+  protected beforeDeserialize(serialized: ModelSerialized) {
     return serialized
   }
 

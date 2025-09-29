@@ -1,4 +1,4 @@
-import ModelSerialization from '../EntitySerializer'
+import ModelSerialization from '../ModelSerializer'
 
 export function field(...fields: string[]): PropertyDecorator {
   return (target: any, key: string | symbol): any => {

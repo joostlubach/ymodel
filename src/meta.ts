@@ -1,21 +1,21 @@
 import { isFunction, objectEntries } from 'ytil'
-import { Entity } from './Entity'
-import { Context, EntityClass, EntityMeta, EntityMetaInput } from './types'
+import { Model } from './Model'
+import { Context, ModelConstructor, ModelMeta, ModelMetaInput } from './types'
 
-const metas: Map<EntityClass<any>, EntityMetaInput<any>> = new Map()
+const metas: Map<ModelConstructor<any>, ModelMetaInput<any>> = new Map()
 
-export function assignMeta(target: EntityClass<any>, meta: EntityMetaInput<any>) {
+export function assignMeta(target: ModelConstructor<any>, meta: ModelMetaInput<any>) {
   metas.set(target, {
     ...metas.get(target),
     ...meta,
   })
 }
 
-export function entityMeta<E extends Entity>(arg: E | EntityClass<E>, context: Context): EntityMeta {
-  const EntityConstructor = arg instanceof Entity ? arg.constructor as EntityClass<E> : arg
-  const input = metas.get(EntityConstructor) as EntityMetaInput<E>
+export function modelMeta<E extends Model>(arg: E | ModelConstructor<E>, context: Context): ModelMeta {
+  const ModelConstructor = arg instanceof Model ? arg.constructor as ModelConstructor<E> : arg
+  const input = metas.get(ModelConstructor) as ModelMetaInput<E>
   if (input == null) {
-    throw new Error(`No meta assigned to entity ${EntityConstructor.name}`)
+    throw new Error(`No meta assigned to model ${ModelConstructor.name}`)
   } 
 
   const meta: Record<string, any> = {}
@@ -23,14 +23,14 @@ export function entityMeta<E extends Entity>(arg: E | EntityClass<E>, context: C
     const key = entry[0] as any
     const inp = entry[1] as any
 
-    const value = isFunction(inp) ? inp(arg === EntityConstructor ? null : arg, context) : inp
+    const value = isFunction(inp) ? inp(arg === ModelConstructor ? null : arg, context) : inp
     meta[key] = value
   }
 
-  return meta as EntityMeta
+  return meta as ModelMeta
 }
 
-export function modelName<E extends Entity>(entity: E | EntityClass<E>, context: Context): string {
-  const EntityConstructor = entity instanceof Entity ? entity.constructor as EntityClass<E> : entity
-  return entityMeta(entity, context)?.name ?? EntityConstructor.name
+export function modelName<E extends Model>(model: E | ModelConstructor<E>, context: Context): string {
+  const ModelConstructor = model instanceof Model ? model.constructor as ModelConstructor<E> : model
+  return modelMeta(model, context)?.name ?? ModelConstructor.name
 }

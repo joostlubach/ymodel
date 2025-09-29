@@ -1,15 +1,15 @@
 import { isObject } from 'lodash'
 import { Constructor, isFunction, modifyObject, monad, sparse } from 'ytil'
-import { Entity } from './Entity'
+import { Model } from './Model'
 import { getRefExtractors } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
-import { Context, EntitySerialized, PropertyInfo, RefInfo } from './types'
+import { Context, ModelSerialized, PropertyInfo, RefInfo } from './types'
 import { resolveConstructor, resolveSuperCtor } from './util'
 
 export default class ModelSerializer {
 
   constructor(
-    public Entity: Constructor<Entity>,
+    public Model: Constructor<Model>,
   ) {}
 
   private propertyInfos: Record<string | symbol, PropertyInfo> = {}
@@ -25,7 +25,7 @@ export default class ModelSerializer {
   }
 
   public get super(): ModelSerializer | null {
-    const superCtor = resolveSuperCtor(this.Entity)
+    const superCtor = resolveSuperCtor(this.Model)
     if (superCtor == null) { return null }
 
     return ModelSerializer.for(superCtor)
@@ -59,13 +59,13 @@ export default class ModelSerializer {
   //------
   // Serialization
 
-  public deserializeInto(entity: Entity, serialized: EntitySerialized, context: Context) {
-    for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(entity))) {
+  public deserializeInto(model: Model, serialized: ModelSerialized, context: Context) {
+    for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(model))) {
       if (prop === '$serialized') { continue }
       if (descriptor.enumerable !== true) { continue }
       if (isFunction(descriptor.value)) { continue }
 
-      Object.defineProperty(entity, prop, {
+      Object.defineProperty(model, prop, {
         ...descriptor,
         value:        this.deserializeProp(prop, serialized, context),
         configurable: false,
@@ -73,20 +73,20 @@ export default class ModelSerializer {
     }
   }
 
-  public serializePartial(entity: Partial<Entity>) {
-    const serialized: EntitySerialized = {}
-    for (const prop of Object.getOwnPropertyNames(entity)) {
-      const info = Object.getOwnPropertyDescriptor(entity, prop)
+  public serializePartial(model: Partial<Model>) {
+    const serialized: ModelSerialized = {}
+    for (const prop of Object.getOwnPropertyNames(model)) {
+      const info = Object.getOwnPropertyDescriptor(model, prop)
       if (info?.enumerable !== true) { continue }
 
-      const value = (entity as any)[prop]
+      const value = (model as any)[prop]
       this.serializePropInto(serialized, prop, value)
     }
 
     return serialized
   }
 
-  public deserializeProp(prop: string, serialized: EntitySerialized, context: Context) {
+  public deserializeProp(prop: string, serialized: ModelSerialized, context: Context) {
     const info = this.propInfo(prop)
 
     if (info.ref != null) {
@@ -96,7 +96,7 @@ export default class ModelSerializer {
     }
   }
 
-  private deserializePropValue(prop: string, info: PropertyInfo, serialized: EntitySerialized) {
+  private deserializePropValue(prop: string, info: PropertyInfo, serialized: ModelSerialized) {
     const fields = sparse(info.fields ?? [prop])
     let value = fields.reduce<any>((value, field) => {
       return value === undefined ? serialized[field] : value
@@ -110,14 +110,14 @@ export default class ModelSerializer {
         ))
       } else {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type
-        console.warn(`Prop [${this.Entity.name}.${prop}]: no serializer found for type \`${typeName}\``)
+        console.warn(`Prop [${this.Model.name}.${prop}]: no serializer found for type \`${typeName}\``)
       }
     }
     
     return value
   }
 
-  private deserializeRef(prop: string, propInfo: PropertyInfo, refInfo: RefInfo<Entity>, serialized: EntitySerialized, context: Context) {
+  private deserializeRef(prop: string, propInfo: PropertyInfo, refInfo: RefInfo<Model>, serialized: ModelSerialized, context: Context) {
     const extractors = getRefExtractors()
 
     for (const extractor of extractors) {
@@ -127,10 +127,10 @@ export default class ModelSerializer {
       return refs
     }
 
-    throw new Error(`Prop [${this.Entity.name}.${prop}]: no ref extractor found`)
+    throw new Error(`Prop [${this.Model.name}.${prop}]: no ref extractor found`)
   }
 
-  public serializePropInto(serialized: EntitySerialized, prop: string, value: any) {
+  public serializePropInto(serialized: ModelSerialized, prop: string, value: any) {
     const info = this.propInfo(prop)
     const destProp = sparse(info.fields ?? [prop]).shift()!
 
@@ -146,7 +146,7 @@ export default class ModelSerializer {
         ))
       } else {
         const typeName = isObject(type) ? (type as any)?.name ?? type : type
-        console.warn(`Prop [${this.Entity.name}.${prop}]: no serializer found for type \`${typeName}\``)
+        console.warn(`Prop [${this.Model.name}.${prop}]: no serializer found for type \`${typeName}\``)
       }
     }
 
