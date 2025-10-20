@@ -28,6 +28,7 @@
     "typescript": "*"
   },
   "devDependencies": {
+    "lodash": "^4.17.21",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
   },
