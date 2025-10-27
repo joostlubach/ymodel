@@ -9,7 +9,7 @@ export interface PropertyInfo {
 }
 
 export interface RefInfo<E extends Model> {
-  model:   (() => ModelConstructor<E>) | string
+  model:    (() => ModelConstructor<E>) | string
   idField?: string
 }
 

@@ -6,7 +6,7 @@ export class Ref<E extends Model> {
   constructor(
     public readonly info: RefInfo<E>,
     public readonly id: IDOf<E>,
-    private readonly context: Context
+    private readonly context: Context,
   ) {}
 
   public get(): E | null {
