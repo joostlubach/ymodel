@@ -1,9 +1,10 @@
 import { Model } from './Model'
-import { Context, IDOf, RefExtractor, RefInfo, RefResolver } from './types'
+import { Context, IDOf, ModelConstructor, RefExtractor, RefInfo, RefResolver } from './types'
 
 export class Ref<E extends Model> {
 
   constructor(
+    public readonly Model: ModelConstructor<any>,
     public readonly info: RefInfo<E>,
     public readonly id: IDOf<E>,
     private readonly context: Context,

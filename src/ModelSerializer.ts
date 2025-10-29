@@ -3,7 +3,7 @@ import { Constructor, isFunction, modifyObject, monad, sparse } from 'ytil'
 import { Model } from './Model'
 import { getRefExtractors } from './Ref'
 import { modelSerializers, propSerializers } from './registry'
-import { Context, ModelSerialized, PropertyInfo, RefInfo } from './types'
+import { Context, ModelConstructor, ModelSerialized, PropertyInfo, RefInfo } from './types'
 import { resolveConstructor, resolveSuperCtor } from './util'
 
 export default class ModelSerializer {
@@ -121,7 +121,7 @@ export default class ModelSerializer {
     const extractors = getRefExtractors()
 
     for (const extractor of extractors) {
-      const refs = extractor(prop, propInfo, refInfo, serialized, context)
+      const refs = extractor(this.Model as ModelConstructor<any>, prop, propInfo, refInfo, serialized, context)
       if (refs === undefined) { continue }
       
       return refs

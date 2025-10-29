@@ -53,7 +53,7 @@ export type ModelMetaInput<E extends Model> = {
 }
 
 export type RefResolver<E extends Model> = (ref: Ref<E>, context: Context) => E | null
-export type RefExtractor<E extends Model> = (prop: string, propInfo: PropertyInfo, refInfo: RefInfo<E>, serialized: ModelSerialized, context: Context) => Ref<E> | undefined
+export type RefExtractor<E extends Model> = (Model: ModelConstructor<E>, prop: string, propInfo: PropertyInfo, refInfo: RefInfo<E>, serialized: ModelSerialized, context: Context) => Ref<E>[] | Ref<E> | null | undefined
 
 // Gracious ID extractor - if unknown, defaults to `any` instead of `never`.
 export type IDOf<E extends Model> = E extends {id: infer ID} ? ID : any
