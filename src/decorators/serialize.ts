@@ -7,7 +7,7 @@ export function serialize(type: Function, options: SerializerDecoratorOptions = 
     }
 
     const key = context.name as string
-    context.addInitializer(function() {
+    context.addInitializer(function () {
       ModelSerialization.for(this).modify(key, info => {
         const {path, ...rest} = options
         info.serialize.push({type, path, options: rest})

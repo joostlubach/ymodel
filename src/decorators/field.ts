@@ -7,7 +7,7 @@ export function field(...fields: string[]) {
     }
 
     const key = context.name as string
-    context.addInitializer(function() {
+    context.addInitializer(function () {
       const serialization = ModelSerialization.for(this)
       serialization.modify(key, prop => {
         prop.fields = fields

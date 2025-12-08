@@ -11,7 +11,7 @@ export function ref<E extends Model>(model: (() => ModelConstructor<E>) | string
     }
 
     const key = context.name as string
-    context.addInitializer(function() {
+    context.addInitializer(function () {
       const serialization = ModelSerialization.for(this as object)
       serialization.modify(key, info => {
         if (field != null) {
