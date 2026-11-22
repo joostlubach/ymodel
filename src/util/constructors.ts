@@ -1,4 +1,4 @@
-import { Constructor } from 'ytil'
+import { Constructor } from '@mosdev/ytil'
 
 export function resolveConstructor(arg: any) {
   if (typeof arg === 'function' && arg.prototype != null) {

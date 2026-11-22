@@ -1,4 +1,4 @@
-import { Constructor, EmptyObject } from 'ytil'
+import { Constructor, EmptyObject } from '@mosdev/ytil'
 import { propSerializers } from './registry'
 import { PropertySerializer } from './types'
 

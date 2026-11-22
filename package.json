@@ -1,5 +1,5 @@
 {
-  "name": "ymodel",
+  "name": "@mosdev/ymodel",
   "version": "1.0.0",
   "description": "Easy to use model base class with basic deserialization support.",
   "author": "Joost Lubach",
@@ -45,6 +45,6 @@
   },
   "dependencies": {
     "luxon": "^3.7.2",
-    "ytil": "workspace:^"
+    "@mosdev/ytil": "workspace:^"
   }
 }

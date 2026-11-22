@@ -1,5 +1,5 @@
 import { isArray } from 'lodash'
-import { objectEntries, sparse } from 'ytil'
+import { objectEntries, sparse } from '@mosdev/ytil'
 import { Ref } from '../Ref'
 
 export function flattenRefs<O extends object>(model: O): object {

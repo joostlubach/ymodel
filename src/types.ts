@@ -1,4 +1,4 @@
-import { AnyFunction } from 'ytil'
+import { AnyFunction } from '@mosdev/ytil'
 import { Model } from './Model'
 import { Ref } from './Ref'
 

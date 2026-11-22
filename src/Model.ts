@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { Constructor } from 'ytil'
+import { Constructor } from '@mosdev/ytil'
 import ModelSerialization from './ModelSerializer'
 import { Context, ModelConstructor, ModelSerialized } from './types'
 

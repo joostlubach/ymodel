@@ -1,5 +1,5 @@
 import { isObject } from 'lodash'
-import { Constructor, isFunction, modifyObject, monad, sparse } from 'ytil'
+import { Constructor, isFunction, modifyObject, monad, sparse } from '@mosdev/ytil'
 import { Model } from './Model'
 import { getRefExtractors } from './Ref'
 import { modelSerializers, propSerializers } from './registry'

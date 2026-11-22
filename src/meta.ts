@@ -1,4 +1,4 @@
-import { isFunction, objectEntries } from 'ytil'
+import { isFunction, objectEntries } from '@mosdev/ytil'
 import { Model } from './Model'
 import { Context, ModelConstructor, ModelMeta, ModelMetaInput } from './types'
 
